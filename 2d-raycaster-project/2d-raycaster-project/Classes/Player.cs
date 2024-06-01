@@ -7,12 +7,14 @@ namespace _2d_raycaster_project
         public float X { get; private set; }
         public float Y { get; private set; }
         public float Direction { get; private set; }
+        public float FOV { get; private set; }
 
-        public Player(float x, float y, float direction)
+        public Player(float x, float y, float direction, float fov)
         {
             X = x;
             Y = y;
             Direction = direction;
+            FOV = fov;
         }
 
         public void MoveForward(float distance)

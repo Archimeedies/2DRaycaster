@@ -16,7 +16,6 @@ namespace _2d_raycaster_project
 
         // Player instance
         private Player player;
-        private float fov = (float)Math.PI / 3f;
 
         // fps tracker
         private Stopwatch stopwatch = new Stopwatch();
@@ -45,7 +44,7 @@ namespace _2d_raycaster_project
             this._bitmap = bitmap;
             this._graphics = graphics;
             this._clientSize = clientSize;
-            player = new Player(5.0f, 5.0f, 0.0f); // Initialize the player
+            player = new Player(5.0f, 5.0f, 0.0f, (float)Math.PI / 3f); // Initialize the player
             LoadTextures();
         }
         private void LoadTextures()
@@ -63,25 +62,15 @@ namespace _2d_raycaster_project
             int screenWidth = _clientSize.Width;
             int screenHeight = _clientSize.Height;
 
-            // calculate FPS
-            frameCount++;
-            if (frameCount >= fpsUpdateInterval)
-            {
-                stopwatch.Stop();
-                fps = frameCount / (stopwatch.ElapsedMilliseconds / 1000.0);
-                frameCount = 0;
-                stopwatch.Restart();
-            }
-            //draw FPS
-            string fpsText = $"FPS: {fps:F0}";
-            _graphics.DrawString(fpsText, new Font("Arial", 12), Brushes.White, new PointF(10, 10));
+            // Floor rendering
+            _graphics.FillRectangle(Brushes.Gray, 0, _clientSize.Height / 2, _clientSize.Width, _clientSize.Height / 2);
 
             // raycasting
             for (int i = 0; i < screenWidth; i++)
             {
                 // Calculate ray position and direction
-                float rayDirX = (float)Math.Cos(player.Direction - fov / 2.0f + i * fov / screenWidth);
-                float rayDirY = (float)Math.Sin(player.Direction - fov / 2.0f + i * fov / screenWidth);
+                float rayDirX = (float)Math.Cos(player.Direction - player.FOV / 2.0f + i * player.FOV / screenWidth);
+                float rayDirY = (float)Math.Sin(player.Direction - player.FOV / 2.0f + i * player.FOV / screenWidth);
 
                 // Which box of the map we're in
                 int mapX = (int)player.X;
@@ -176,6 +165,7 @@ namespace _2d_raycaster_project
                         color = Color.White; // Default color
                         break;
                 }
+
                 // Calculate texture coordinates based on wall hit
                 double wallHitX;
                 if (side == 0) // Ray hits a vertical wall
@@ -200,6 +190,19 @@ namespace _2d_raycaster_project
                     _graphics.DrawImage(texture, destRect, srcRect, GraphicsUnit.Pixel);
                 }
             }
+
+            // calculate FPS
+            frameCount++;
+            if (frameCount >= fpsUpdateInterval)
+            {
+                stopwatch.Stop();
+                fps = frameCount / (stopwatch.ElapsedMilliseconds / 1000.0);
+                frameCount = 0;
+                stopwatch.Restart();
+            }
+            //draw FPS
+            string fpsText = $"FPS: {fps:F0}";
+            _graphics.DrawString(fpsText, new Font("Arial", 12), Brushes.White, new PointF(10, 10));
 
             _graphics.DrawImage(_bitmap, 0, 0);
         }
