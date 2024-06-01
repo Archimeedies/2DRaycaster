@@ -64,17 +64,17 @@ namespace _2d_raycaster_project
             int screenHeight = _clientSize.Height;
 
             // Draw floor and ceiling with gradient
-            for (int y = screenHeight / 2; y < screenHeight; y++)
+            for (int i = screenHeight / 2; i < screenHeight; i++)
             {
                 // Floor color gradient
-                int gradientFactor = (int)(255 * (y - screenHeight / 2) / (screenHeight / 2));
+                int gradientFactor = (int)(255 * (i - screenHeight / 2) / (screenHeight / 2));
                 Color floorColor = Color.FromArgb(gradientFactor, gradientFactor, gradientFactor);
-                _graphics.DrawLine(new Pen(floorColor), 0, y, screenWidth, y);
+                _graphics.DrawLine(new Pen(floorColor), 0, i, screenWidth, i);
 
                 // Ceiling color gradient
                 gradientFactor = 255 - gradientFactor;
                 Color ceilingColor = Color.FromArgb(gradientFactor, gradientFactor, 255);
-                _graphics.DrawLine(new Pen(ceilingColor), 0, screenHeight - y, screenWidth, screenHeight - y);
+                _graphics.DrawLine(new Pen(ceilingColor), 0, screenHeight - i, screenWidth, screenHeight - i);
             }
 
             // raycasting
@@ -95,8 +95,7 @@ namespace _2d_raycaster_project
                 float sideDistX, sideDistY;
 
                 // What direction to step in x or y-direction (either +1 or -1)
-                int stepX;
-                int stepY;
+                int stepX, stepY;
 
                 bool hit = false; // Was there a wall hit?
                 int side = 0; // Was a NS or a EW wall hit?
@@ -228,8 +227,28 @@ namespace _2d_raycaster_project
             {
                 return true; // Collision detected
             }
-
             return false; // No collision
+        }
+        private void PlayerSlide(float x, float y)
+        {
+            // Determine the nearest wall direction to slide along
+            bool xCollision = IsWallCollision(x, player.Y);
+            bool yCollision = IsWallCollision(player.X, y);
+
+            if (xCollision && !yCollision)
+            {
+                // Slide along the Y axis (vertical wall)
+                player.Y = y;
+            }
+            else if (yCollision && !xCollision)
+            {
+                // Slide along the X axis (horizontal wall)
+                player.X = x;
+            }
+            else if (xCollision && yCollision)
+            {
+                // Both x and y collisions, stop movement
+            }
         }
         public void MoveForward(float distance)
         {
@@ -240,6 +259,10 @@ namespace _2d_raycaster_project
             {
                 player.X = newX;
                 player.Y = newY;
+            }
+            else
+            {
+                PlayerSlide(newX, newY);
             }
         }
         public void MoveBackward(float distance)
@@ -252,6 +275,10 @@ namespace _2d_raycaster_project
                 player.X = newX;
                 player.Y = newY;
             }
+            else
+            {
+                PlayerSlide(newX, newY);
+            }
         }
         public void MoveLeft(float distance)
         {
@@ -262,6 +289,10 @@ namespace _2d_raycaster_project
             {
                 player.X = newX;
                 player.Y = newY;
+            }
+            else
+            {
+                PlayerSlide(newX, newY);
             }
         }
 
@@ -274,6 +305,10 @@ namespace _2d_raycaster_project
             {
                 player.X = newX;
                 player.Y = newY;
+            }
+            else
+            {
+                PlayerSlide(newX, newY);
             }
         }
         public void PlayerMouseMove(Form form, ref Point lastMousePosition)
