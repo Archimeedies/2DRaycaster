@@ -65,6 +65,9 @@ namespace _2d_raycaster_project
             // Floor rendering
             _graphics.FillRectangle(Brushes.Gray, 0, _clientSize.Height / 2, _clientSize.Width, _clientSize.Height / 2);
 
+            // ceiling rendering
+            _graphics.FillRectangle(Brushes.LightBlue, 0, 0, _clientSize.Width, _clientSize.Height / 2);
+
             // raycasting
             for (int i = 0; i < screenWidth; i++)
             {
@@ -143,8 +146,6 @@ namespace _2d_raycaster_project
                 // Calculate lowest and highest pixel to fill in current stripe
                 int drawStart = -lineHeight / 2 + screenHeight / 2;
                 if (drawStart < 0) drawStart = 0;
-                int drawEnd = lineHeight / 2 + screenHeight / 2;
-                if (drawEnd >= screenHeight) drawEnd = screenHeight - 1;
 
                 // Choose wall color or texture
                 Color color;
