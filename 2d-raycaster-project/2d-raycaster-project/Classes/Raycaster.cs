@@ -23,6 +23,7 @@ namespace _2d_raycaster_project
         private int frameCount = 0;
         private double fps = 0.0;
         private const int fpsUpdateInterval = 16; // Update FPS value every 16 frames
+        private const float BufferDistance = 0.1f; // Adjust this value as needed
 
         private const int MAP_WIDTH = 10;
         private const int MAP_HEIGHT = 10;
@@ -227,12 +228,32 @@ namespace _2d_raycaster_project
             int mapX = (int)x;
             int mapY = (int)y;
 
-            if (mapX < 0 || mapX >= MAP_WIDTH || mapY < 0 || mapY >= MAP_HEIGHT || map[mapX, mapY] > 0)
+            // Check if the player is within the buffer distance of any wall
+            for (int i = -1; i <= 1; i++)
             {
-                return true; // Collision detected
+                for (int j = -1; j <= 1; j++)
+                {
+                    if (mapX + i >= 0 && mapX + i < MAP_WIDTH && mapY + j >= 0 && mapY + j < MAP_HEIGHT)
+                    {
+                        if (map[mapX + i, mapY + j] > 0)
+                        {
+                            float nearestX = Math.Max(mapX + i, Math.Min(x, mapX + i + 1));
+                            float nearestY = Math.Max(mapY + j, Math.Min(y, mapY + j + 1));
+
+                            float deltaX = x - nearestX;
+                            float deltaY = y - nearestY;
+
+                            if ((deltaX * deltaX + deltaY * deltaY) < (BufferDistance * BufferDistance))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
             }
-            return false; // No collision
+            return false;
         }
+
         private void PlayerSlide(float x, float y)
         {
             // Determine the nearest wall direction to slide along
