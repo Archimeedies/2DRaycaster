@@ -255,5 +255,21 @@ namespace _2d_raycaster_project
         {
             player.RotateRight(angle);
         }
+        public void PlayerMouseMove(Form form, ref Point lastMousePosition)
+        {
+            Point currentMousePosition = form.PointToClient(Cursor.Position);
+            int deltaX = currentMousePosition.X - lastMousePosition.X;
+
+            float sensitivity = 0.002f;
+            player.Direction += deltaX * sensitivity;
+
+            // Wrap the player direction to stay within 0 to 2*PI range
+            if (player.Direction < 0) player.Direction += 2 * (float)Math.PI;
+            if (player.Direction >= 2 * (float)Math.PI) player.Direction -= 2 * (float)Math.PI;
+
+            // Reset the cursor to the center of the form
+            Cursor.Position = form.PointToScreen(new Point(form.Width / 2, form.Height / 2));
+            lastMousePosition = form.PointToClient(Cursor.Position);
+        }
     }
 }

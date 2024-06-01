@@ -39,5 +39,9 @@ namespace _2d_raycaster_project
                     break;
             }
         }
+        public void PlayerMouseMove(Form1 form, ref Point lastMousePosition)
+        {
+            raycaster.PlayerMouseMove(form, ref lastMousePosition);
+        }
     }
 }

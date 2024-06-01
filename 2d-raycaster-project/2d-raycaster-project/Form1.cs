@@ -54,7 +54,7 @@ namespace _2d_raycaster_project
         {
             if (isMouseCaptured)
             {
-                
+                controller.PlayerMouseMove(this, ref lastMousePosition);
             }
         }
         private void CaptureMouse()
