@@ -28,7 +28,7 @@ namespace _2d_raycaster_project
         private const int MAP_HEIGHT = 10;
         private int[,] map = new int[MAP_WIDTH, MAP_HEIGHT]
         {
-                    {0,1,1,1,1,1,1,0,1,0},
+                    {1,1,1,1,1,1,1,1,1,1},
                     {2,0,0,0,0,0,0,3,0,2},
                     {2,0,0,0,0,0,0,3,0,2},
                     {2,0,0,0,0,0,0,3,0,2},
@@ -37,7 +37,7 @@ namespace _2d_raycaster_project
                     {2,0,0,0,0,0,0,0,0,2},
                     {2,0,0,0,0,0,0,0,0,2},
                     {2,0,0,0,0,0,0,0,0,2},
-                    {0,1,1,1,1,1,1,1,1,0}
+                    {1,1,1,1,1,1,1,1,1,1}
         };
         private Dictionary<int, Bitmap> wallTextures = new Dictionary<int, Bitmap>(); // Map wall types to texture images
         public Raycaster(Bitmap bitmap, Graphics graphics, Size clientSize)
@@ -45,7 +45,8 @@ namespace _2d_raycaster_project
             this._bitmap = bitmap;
             this._graphics = graphics;
             this._clientSize = clientSize;
-            player = new Player(5.0f, 5.0f, 0.0f, (float)Math.PI / 3f); // Initialize the player
+            player = new Player(1.5f, 1.5f, 0.0f, (float)Math.PI / 3); // Starting at (1.5, 1.5), looking straight ahead, with a 60 degree FOV
+
             LoadTextures();
         }
         private void LoadTextures()
@@ -81,8 +82,9 @@ namespace _2d_raycaster_project
             for (int i = 0; i < screenWidth; i++)
             {
                 // Calculate ray position and direction
-                float rayDirX = (float)Math.Cos(player.Direction - player.FOV / 2.0f + i * player.FOV / screenWidth);
-                float rayDirY = (float)Math.Sin(player.Direction - player.FOV / 2.0f + i * player.FOV / screenWidth);
+                float cameraX = 2 * i / (float)screenWidth - 1; // x-coordinate in camera space
+                float rayDirX = player.DirectionX + player.PlaneX * cameraX;
+                float rayDirY = player.DirectionY + player.PlaneY * cameraX;
 
                 // Which box of the map we're in
                 int mapX = (int)player.X;
@@ -144,8 +146,10 @@ namespace _2d_raycaster_project
 
                 // Calculate distance to the point of impact
                 float perpWallDist;
-                if (side == 0) perpWallDist = (sideDistX - deltaDistX);
-                else perpWallDist = (sideDistY - deltaDistY);
+                if (side == 0)
+                    perpWallDist = (mapX - player.X + (1 - stepX) / 2) / rayDirX;
+                else
+                    perpWallDist = (mapY - player.Y + (1 - stepY) / 2) / rayDirY;
 
                 // Calculate height of line to draw on screen
                 int lineHeight = (int)(screenHeight / perpWallDist);
@@ -323,9 +327,19 @@ namespace _2d_raycaster_project
             if (player.Direction < 0) player.Direction += 2 * (float)Math.PI;
             if (player.Direction >= 2 * (float)Math.PI) player.Direction -= 2 * (float)Math.PI;
 
+            // Update direction vectors
+            player.DirectionX = (float)Math.Cos(player.Direction);
+            player.DirectionY = (float)Math.Sin(player.Direction);
+
+            // Update camera plane
+            float planeMagnitude = (float)Math.Tan(player.FOV / 2.0f);
+            player.PlaneX = -player.DirectionY * planeMagnitude;
+            player.PlaneY = player.DirectionX * planeMagnitude;
+
             // Reset the cursor to the center of the form
             Cursor.Position = form.PointToScreen(new Point(form.Width / 2, form.Height / 2));
             lastMousePosition = form.PointToClient(Cursor.Position);
         }
+
     }
 }
