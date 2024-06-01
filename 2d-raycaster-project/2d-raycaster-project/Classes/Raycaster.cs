@@ -65,6 +65,9 @@ namespace _2d_raycaster_project
             // Floor rendering
             _graphics.FillRectangle(Brushes.Gray, 0, _clientSize.Height / 2, _clientSize.Width, _clientSize.Height / 2);
 
+            // ceiling rendering
+            _graphics.FillRectangle(Brushes.LightBlue, 0, 0, _clientSize.Width, _clientSize.Height / 2);
+
             // raycasting
             for (int i = 0; i < screenWidth; i++)
             {
