@@ -22,8 +22,8 @@ namespace _2d_raycaster_project
         private Stopwatch stopwatch = new Stopwatch();
         private int frameCount = 0;
         private double fps = 0.0;
-        private const int fpsUpdateInterval = 16; // Update FPS value every 16 frames
-        private const float BufferDistance = 0.1f; // Adjust this value as needed
+        private const int FPS_UPDATE_INTERVAL = 16; // Update FPS value every 16 frames
+        private const float BUFFER_DISTANCE = 0.1f; // Adjust this for the player boundary to the walls
 
         private const int MAP_WIDTH = 10;
         private const int MAP_HEIGHT = 10;
@@ -208,7 +208,7 @@ namespace _2d_raycaster_project
 
             // calculate FPS
             frameCount++;
-            if (frameCount >= fpsUpdateInterval)
+            if (frameCount >= FPS_UPDATE_INTERVAL)
             {
                 stopwatch.Stop();
                 fps = frameCount / (stopwatch.ElapsedMilliseconds / 1000.0);
@@ -243,7 +243,7 @@ namespace _2d_raycaster_project
                             float deltaX = x - nearestX;
                             float deltaY = y - nearestY;
 
-                            if ((deltaX * deltaX + deltaY * deltaY) < (BufferDistance * BufferDistance))
+                            if ((deltaX * deltaX + deltaY * deltaY) < (BUFFER_DISTANCE * BUFFER_DISTANCE))
                             {
                                 return true;
                             }
