@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace _2d_raycaster_project
 {
@@ -21,7 +22,7 @@ namespace _2d_raycaster_project
         private Stopwatch stopwatch = new Stopwatch();
         private int frameCount = 0;
         private double fps = 0.0;
-        private const int fpsUpdateInterval = 10; // Update FPS value every 10 frames
+        private const int fpsUpdateInterval = 16; // Update FPS value every 16 frames
 
         private const int MAP_WIDTH = 10;
         private const int MAP_HEIGHT = 10;
@@ -209,16 +210,42 @@ namespace _2d_raycaster_project
 
             _graphics.DrawImage(_bitmap, 0, 0);
         }
+
+        // player movement
+        private bool IsWallCollision(float x, float y)
+        {
+            int mapX = (int)x;
+            int mapY = (int)y;
+
+            if (mapX < 0 || mapX >= MAP_WIDTH || mapY < 0 || mapY >= MAP_HEIGHT || map[mapX, mapY] > 0)
+            {
+                return true; // Collision detected
+            }
+
+            return false; // No collision
+        }
         public void MoveForward(float distance)
         {
-            player.MoveForward(distance);
-        }
+            float newX = player.X + (float)Math.Cos(player.Direction) * distance;
+            float newY = player.Y + (float)Math.Sin(player.Direction) * distance;
 
+            if (!IsWallCollision(newX, newY))
+            {
+                player.X = newX;
+                player.Y = newY;
+            }
+        }
         public void MoveBackward(float distance)
         {
-            player.MoveBackward(distance);
-        }
+            float newX = player.X - (float)Math.Cos(player.Direction) * distance;
+            float newY = player.Y - (float)Math.Sin(player.Direction) * distance;
 
+            if (!IsWallCollision(newX, newY))
+            {
+                player.X = newX;
+                player.Y = newY;
+            }
+        }
         public void RotateLeft(float angle)
         {
             player.RotateLeft(angle);

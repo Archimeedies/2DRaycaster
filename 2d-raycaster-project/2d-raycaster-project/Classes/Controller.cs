@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace _2d_raycaster_project
@@ -17,7 +18,7 @@ namespace _2d_raycaster_project
             raycaster.Update();
         }
 
-        public void HandleInput(KeyEventArgs e, float moveSpeed, float rotSpeed)
+        public void KeyMovement(KeyEventArgs e, float moveSpeed, float rotSpeed)
         {
             switch (e.KeyCode)
             {

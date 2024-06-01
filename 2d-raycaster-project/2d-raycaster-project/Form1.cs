@@ -15,6 +15,10 @@ namespace _2d_raycaster_project
         // classes
         private Controller controller;
 
+        // Mouse look variables
+        private Point lastMousePosition;
+        private bool isMouseCaptured = false;
+
         public Form1()
         {
             InitializeComponent();
@@ -29,6 +33,9 @@ namespace _2d_raycaster_project
             timer1.Interval = 1; // Approximately 60 FPS
             timer1.Start();
             this.KeyDown += Form1_KeyDown_1; // Connect the KeyDown event
+
+            // Capture the mouse
+            CaptureMouse();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -40,8 +47,22 @@ namespace _2d_raycaster_project
         private void Form1_KeyDown_1(object sender, KeyEventArgs e)
         {
             float moveSpeed = 0.1f;
-            float rotSpeed = 0.08f;
-            controller.HandleInput(e, moveSpeed, rotSpeed);
+            float rotSpeed = 0.1f;
+            controller.KeyMovement(e, moveSpeed, rotSpeed);
+        }
+        private void Form1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isMouseCaptured)
+            {
+                
+            }
+        }
+        private void CaptureMouse()
+        {
+            Cursor.Hide();
+            this.Capture = true;
+            lastMousePosition = this.PointToClient(Cursor.Position);
+            isMouseCaptured = true;
         }
     }
 }
