@@ -63,11 +63,19 @@ namespace _2d_raycaster_project
             int screenWidth = _clientSize.Width;
             int screenHeight = _clientSize.Height;
 
-            // Floor rendering
-            _graphics.FillRectangle(Brushes.Gray, 0, _clientSize.Height / 2, _clientSize.Width, _clientSize.Height / 2);
+            // Draw floor and ceiling with gradient
+            for (int y = screenHeight / 2; y < screenHeight; y++)
+            {
+                // Floor color gradient
+                int gradientFactor = (int)(255 * (y - screenHeight / 2) / (screenHeight / 2));
+                Color floorColor = Color.FromArgb(gradientFactor, gradientFactor, gradientFactor);
+                _graphics.DrawLine(new Pen(floorColor), 0, y, screenWidth, y);
 
-            // ceiling rendering
-            _graphics.FillRectangle(Brushes.LightBlue, 0, 0, _clientSize.Width, _clientSize.Height / 2);
+                // Ceiling color gradient
+                gradientFactor = 255 - gradientFactor;
+                Color ceilingColor = Color.FromArgb(gradientFactor, gradientFactor, 255);
+                _graphics.DrawLine(new Pen(ceilingColor), 0, screenHeight - y, screenWidth, screenHeight - y);
+            }
 
             // raycasting
             for (int i = 0; i < screenWidth; i++)
@@ -78,14 +86,13 @@ namespace _2d_raycaster_project
 
                 // Which box of the map we're in
                 int mapX = (int)player.X;
-                int mapY = (int)player.Y;
+                int mapY = (int)player.Y;   
 
                 // Length of ray from one x or y-side to next x or y-side
                 float deltaDistX = Math.Abs(1 / rayDirX);
                 float deltaDistY = Math.Abs(1 / rayDirY);
 
-                float sideDistX;
-                float sideDistY;
+                float sideDistX, sideDistY;
 
                 // What direction to step in x or y-direction (either +1 or -1)
                 int stepX;
@@ -246,14 +253,28 @@ namespace _2d_raycaster_project
                 player.Y = newY;
             }
         }
-        public void RotateLeft(float angle)
+        public void MoveLeft(float distance)
         {
-            player.RotateLeft(angle);
+            float newX = player.X + (float)Math.Sin(player.Direction) * distance;
+            float newY = player.Y - (float)Math.Cos(player.Direction) * distance;
+
+            if (!IsWallCollision(newX, newY))
+            {
+                player.X = newX;
+                player.Y = newY;
+            }
         }
 
-        public void RotateRight(float angle)
+        public void MoveRight(float distance)
         {
-            player.RotateRight(angle);
+            float newX = player.X - (float)Math.Sin(player.Direction) * distance;
+            float newY = player.Y + (float)Math.Cos(player.Direction) * distance;
+
+            if (!IsWallCollision(newX, newY))
+            {
+                player.X = newX;
+                player.Y = newY;
+            }
         }
         public void PlayerMouseMove(Form form, ref Point lastMousePosition)
         {

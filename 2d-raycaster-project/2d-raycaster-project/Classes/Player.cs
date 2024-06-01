@@ -17,27 +17,5 @@ namespace _2d_raycaster_project
             Direction = direction;
             FOV = fov;
         }
-
-        public void MoveForward(float distance)
-        {
-            X += (float)Math.Cos(Direction) * distance;
-            Y += (float)Math.Sin(Direction) * distance;
-        }
-
-        public void MoveBackward(float distance)
-        {
-            X -= (float)Math.Cos(Direction) * distance;
-            Y -= (float)Math.Sin(Direction) * distance;
-        }
-
-        public void RotateLeft(float angle)
-        {
-            Direction -= angle;
-        }
-
-        public void RotateRight(float angle)
-        {
-            Direction += angle;
-        }
     }
 }

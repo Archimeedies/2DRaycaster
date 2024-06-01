@@ -18,7 +18,7 @@ namespace _2d_raycaster_project
             raycaster.Update();
         }
 
-        public void KeyMovement(KeyEventArgs e, float moveSpeed, float rotSpeed)
+        public void KeyMovement(KeyEventArgs e, float moveSpeed)
         {
             switch (e.KeyCode)
             {
@@ -29,10 +29,10 @@ namespace _2d_raycaster_project
                     raycaster.MoveBackward(moveSpeed);
                     break;
                 case Keys.A:
-                    raycaster.RotateLeft(rotSpeed);
+                    raycaster.MoveLeft(moveSpeed);
                     break;
                 case Keys.D:
-                    raycaster.RotateRight(rotSpeed);
+                    raycaster.MoveRight(moveSpeed);
                     break;
                 case Keys.Escape:
                     Application.Exit();
