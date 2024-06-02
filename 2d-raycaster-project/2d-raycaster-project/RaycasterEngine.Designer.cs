@@ -1,6 +1,6 @@
 ﻿namespace _2d_raycaster_project
 {
-    partial class Form1
+    partial class RaycasterEngine
     {
         /// <summary>
         /// Required designer variable.
@@ -36,14 +36,14 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // Form1
+            // RaycasterEngine
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(782, 553);
-            this.Name = "Form1";
+            this.ClientSize = new System.Drawing.Size(622, 433);
+            this.Name = "RaycasterEngine";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "2DRaycaster";
+            this.Text = "2D Raycaster Engine";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown_1);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseMove);
             this.ResumeLayout(false);

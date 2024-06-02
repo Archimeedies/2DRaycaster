@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace _2d_raycaster_project
 {
-    public partial class Form1 : Form
+    public partial class RaycasterEngine : Form
     {
         // graphics
         private Bitmap offScreenBitmap;
@@ -26,7 +26,7 @@ namespace _2d_raycaster_project
         const float FOV = (float)Math.PI / 3; // still have to find a way to initalize this
         const float JUMP_STRENGTH = 0; // still have to find a way to implement this
 
-        public Form1()
+        public RaycasterEngine()
         {
             InitializeComponent();
 

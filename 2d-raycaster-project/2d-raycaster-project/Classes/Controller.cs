@@ -42,7 +42,7 @@ namespace _2d_raycaster_project
                     break;
             }
         }
-        public void PlayerMouseMove(Form1 form, ref Point lastMousePosition, float sensitivity)
+        public void PlayerMouseMove(RaycasterEngine form, ref Point lastMousePosition, float sensitivity)
         {
             raycaster.MouseMove(form, ref lastMousePosition, sensitivity);
         }

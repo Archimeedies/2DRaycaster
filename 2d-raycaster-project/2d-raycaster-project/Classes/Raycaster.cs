@@ -19,7 +19,6 @@ namespace _2d_raycaster_project
         private Player player;
         private bool isJumping = false;
         private int jumpTime = 0;
-        private int jumping = 0;
 
         // floor and ceiling variables
         private bool isFloorCeilingInitialized = false;
@@ -31,6 +30,7 @@ namespace _2d_raycaster_project
         private double fps = 0.0;
         private const int fpsUpdateInterval = 16; // Update FPS value every 16 frames
         private const float BufferDistance = 0.1f; // Adjust this value as needed
+        private float FOV = 2.7f; // Edit this for FOV settings
 
         private const int MAP_WIDTH = 10;
         private const int MAP_HEIGHT = 10;
@@ -53,7 +53,7 @@ namespace _2d_raycaster_project
             this._bitmap = bitmap;
             this._graphics = graphics;
             this._clientSize = clientSize;
-            player = new Player(1.5f, 1.5f, 0.0f, (float)Math.PI / 3); // Starting at (1.5, 1.5), looking straight ahead, with a 60 degree FOV
+            player = new Player(1.5f, 1.5f, 0.0f, (float)Math.PI / FOV); // Starting at (1.5, 1.5), looking straight ahead, with a 60 degree FOV
 
             LoadTextures();
         }
