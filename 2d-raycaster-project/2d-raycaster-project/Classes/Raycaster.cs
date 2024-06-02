@@ -179,14 +179,13 @@ namespace _2d_raycaster_project
                 if (isJumping)
                 {
                     // Calculate lowest and highest pixel to fill in current stripe
-                    drawStart = screenHeight / 2 + lineHeight / 2;
-                    if (drawStart >= screenHeight) drawStart = screenHeight - 1;
+                    drawStart = screenHeight / 2 + lineHeight / -3;
                 }
                 else
                 {
                     drawStart = -lineHeight / 2 + screenHeight / 2;
-                    if (drawStart < 0) drawStart = 0;
                 }
+                if (drawStart >= screenHeight) drawStart = screenHeight - 1;
 
                 // Choose wall color or texture
                 Bitmap texture;
