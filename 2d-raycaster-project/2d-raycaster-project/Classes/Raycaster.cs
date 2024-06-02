@@ -180,7 +180,6 @@ namespace _2d_raycaster_project
                 if (drawStart < 0) drawStart = 0;
 
                 // Choose wall color or texture
-                Color color;
                 Bitmap texture;
                 switch (map[mapX, mapY])
                 {
@@ -195,7 +194,6 @@ namespace _2d_raycaster_project
                         break;
                     default:
                         texture = null; // No texture for this wall type
-                        color = Color.White; // Default color
                         break;
                 }
 
