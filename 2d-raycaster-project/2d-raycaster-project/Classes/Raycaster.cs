@@ -245,6 +245,8 @@ namespace _2d_raycaster_project
             _graphics.DrawString(fpsText, new Font("Arial", 12), Brushes.White, new PointF(10, 10));
 
             _graphics.DrawImage(_bitmap, 0, 0);
+
+            isJumping = false;
         }
 
         // player movement
