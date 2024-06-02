@@ -19,20 +19,27 @@ namespace _2d_raycaster_project
         private Point lastMousePosition;
         private bool isMouseCaptured = false;
 
+        // player settings
+        const float MOVE_SPEED = 0.1f;
+        const float MOUSE_SENSITIVITY = 0.002f;
+        const float FOV = (float)Math.PI / 3;
+
         public Form1()
         {
             InitializeComponent();
 
+            // initializing graphics
             offScreenBitmap = new Bitmap(this.Width, this.Height);
             offScreenGraphics = Graphics.FromImage(offScreenBitmap);
             graphics = this.CreateGraphics();
+            this.DoubleBuffered = true;
 
             // initializing classes
             controller = new Controller(offScreenBitmap, offScreenGraphics, ClientSize);
 
+            // timer settings
             timer1.Interval = 1; // Approximately 60 FPS
             timer1.Start();
-            this.KeyDown += Form1_KeyDown_1; // Connect the KeyDown event
 
             // Capture the mouse
             CaptureMouse();
@@ -46,14 +53,13 @@ namespace _2d_raycaster_project
 
         private void Form1_KeyDown_1(object sender, KeyEventArgs e)
         {
-            float moveSpeed = 0.05f;
-            controller.KeyMovement(e, moveSpeed);
+            controller.PlayerKeyMovement(e, MOVE_SPEED);
         }
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
             if (isMouseCaptured)
             {
-                controller.PlayerMouseMove(this, ref lastMousePosition);
+                controller.PlayerMouseMove(this, ref lastMousePosition, MOUSE_SENSITIVITY);
             }
         }
         private void CaptureMouse()

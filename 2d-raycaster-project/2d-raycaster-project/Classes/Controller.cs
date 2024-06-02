@@ -18,7 +18,7 @@ namespace _2d_raycaster_project
             raycaster.Update();
         }
 
-        public void KeyMovement(KeyEventArgs e, float moveSpeed)
+        public void PlayerKeyMovement(KeyEventArgs e, float moveSpeed)
         {
             switch (e.KeyCode)
             {
@@ -39,9 +39,9 @@ namespace _2d_raycaster_project
                     break;
             }
         }
-        public void PlayerMouseMove(Form1 form, ref Point lastMousePosition)
+        public void PlayerMouseMove(Form1 form, ref Point lastMousePosition, float sensitivity)
         {
-            raycaster.PlayerMouseMove(form, ref lastMousePosition);
+            raycaster.MouseMove(form, ref lastMousePosition, sensitivity);
         }
     }
 }

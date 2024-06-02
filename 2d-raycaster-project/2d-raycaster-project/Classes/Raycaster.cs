@@ -82,7 +82,6 @@ namespace _2d_raycaster_project
             }
             isFloorCeilingInitialized = true;
         }
-
         public void Update()
         {
             // clear the screen
@@ -353,12 +352,11 @@ namespace _2d_raycaster_project
                 PlayerSlide(newX, newY);
             }
         }
-        public void PlayerMouseMove(Form form, ref Point lastMousePosition)
+        public void MouseMove(Form form, ref Point lastMousePosition, float sensitivity)
         {
             Point currentMousePosition = form.PointToClient(Cursor.Position);
             int deltaX = currentMousePosition.X - lastMousePosition.X;
 
-            float sensitivity = 0.002f;
             player.Direction += deltaX * sensitivity;
 
             // Wrap the player direction to stay within 0 to 2*PI range
@@ -378,6 +376,5 @@ namespace _2d_raycaster_project
             Cursor.Position = form.PointToScreen(new Point(form.Width / 2, form.Height / 2));
             lastMousePosition = form.PointToClient(Cursor.Position);
         }
-
     }
 }
