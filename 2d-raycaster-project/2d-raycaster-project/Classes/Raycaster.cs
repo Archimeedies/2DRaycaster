@@ -177,7 +177,9 @@ namespace _2d_raycaster_project
                 // Calculate height of line to draw on screen
                 int lineHeight = (int)(screenHeight / perpWallDist);
 
-                int drawStart = 0;
+                // Calculates whether the player is jumping or not, and push the wall rendering down
+                // to appear jumping
+                int drawStart;
                 if (isJumping)
                 {
                     jumpTime++;
