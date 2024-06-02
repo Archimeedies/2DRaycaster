@@ -181,29 +181,43 @@ namespace _2d_raycaster_project
                         break;
                 }
 
-                // Calculate texture coordinates based on wall hit
-                double wallHitX;
-                if (side == 0) // Ray hits a vertical wall
-                {
-                    wallHitX = player.Y + perpWallDist * rayDirY;
-                }
-                else // Ray hits a horizontal wall
-                {
-                    wallHitX = player.X + perpWallDist * rayDirX;
-                }
-                wallHitX -= Math.Floor(wallHitX); // Normalize wallHitX to a fraction between 0 and 1
                 if (texture != null)
                 {
                     // Calculate texture coordinates based on wall hit
+                    double wallHitX;
+                    if (side == 0) // Ray hits a vertical wall
+                    {
+                        wallHitX = player.Y + perpWallDist * rayDirY;
+                    }
+                    else // Ray hits a horizontal wall
+                    {
+                        wallHitX = player.X + perpWallDist * rayDirX;
+                    }
+                    wallHitX -= Math.Floor(wallHitX); // Normalize wallHitX to a fraction between 0 and 1
+
+                    // Calculate texture coordinates based on wall hit
                     int texX = (int)(texture.Width * wallHitX);
+                    if (texX < 0) texX = 0;
+                    if (texX >= texture.Width) texX = texture.Width - 1;
 
-                    // Define source and destination rectangles for drawing the textured wall
-                    Rectangle srcRect = new Rectangle(texX, 0, 1, texture.Height); // Source rectangle from texture
-                    Rectangle destRect = new Rectangle(i, drawStart, 1, lineHeight); // Destination rectangle on screen
+                    // Loop through each vertical pixel of the wall slice
+                    for (int y = drawStart; y < drawEnd; y++)
+                    {
+                        int d = y * 256 - screenHeight * 128 + lineHeight * 128; // 256 and 128 factors to avoid floats
+                        int texY = ((d * texture.Height) / lineHeight) / 256;
 
-                    // Draw the textured vertical line
-                    _graphics.DrawImage(texture, destRect, srcRect, GraphicsUnit.Pixel);
+                        // Ensure texY is within the bounds of the texture height
+                        if (texY < 0) texY = 0;
+                        if (texY >= texture.Height) texY = texture.Height - 1;
+
+                        // Set the color from the texture pixel
+                        color = texture.GetPixel(texX, texY);
+
+                        // Draw the pixel
+                        _bitmap.SetPixel(i, y, color);
+                    }
                 }
+
             }
 
             // calculate FPS

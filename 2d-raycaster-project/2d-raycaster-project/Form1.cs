@@ -22,6 +22,7 @@ namespace _2d_raycaster_project
         public Form1()
         {
             InitializeComponent();
+            this.DoubleBuffered = true;
 
             offScreenBitmap = new Bitmap(this.Width, this.Height);
             offScreenGraphics = Graphics.FromImage(offScreenBitmap);
