@@ -18,6 +18,8 @@ namespace _2d_raycaster_project
         // Player instance
         private Player player;
         private bool isJumping = false;
+        private int jumpTime = 0;
+        private int jumping = 0;
 
         // floor and ceiling variables
         private bool isFloorCeilingInitialized = false;
@@ -175,17 +177,22 @@ namespace _2d_raycaster_project
                 // Calculate height of line to draw on screen
                 int lineHeight = (int)(screenHeight / perpWallDist);
 
-                int drawStart;
+                int drawStart = 0;
                 if (isJumping)
                 {
-                    // Calculate lowest and highest pixel to fill in current stripe
-                    drawStart = screenHeight / 2 + lineHeight / -3;
+                    jumpTime++;
+                    drawStart = screenHeight / 2 + lineHeight / -5;
+                    if (jumpTime == 9500)
+                    {
+                        isJumping = false;
+                        jumpTime = 0;
+                    }
                 }
                 else
                 {
                     drawStart = -lineHeight / 2 + screenHeight / 2;
                 }
-                if (drawStart >= screenHeight) drawStart = screenHeight - 1;
+             
 
                 // Choose wall color or texture
                 Bitmap texture;
@@ -245,8 +252,6 @@ namespace _2d_raycaster_project
             _graphics.DrawString(fpsText, new Font("Arial", 12), Brushes.White, new PointF(10, 10));
 
             _graphics.DrawImage(_bitmap, 0, 0);
-
-            isJumping = false;
         }
 
         // player movement
