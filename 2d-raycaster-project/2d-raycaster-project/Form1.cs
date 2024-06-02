@@ -20,9 +20,9 @@ namespace _2d_raycaster_project
         private bool isMouseCaptured = false;
 
         // player settings
-        const float MOVE_SPEED = 0.1f;
-        const float MOUSE_SENSITIVITY = 0.002f;
-        const float FOV = (float)Math.PI / 3;
+        const float MOVE_SPEED = 0.1f; // adjust for player move seed
+        const float MOUSE_SENSITIVITY = 0.002f; // adjust for player mouse speed
+        const float FOV = (float)Math.PI / 3; // still have to find a way to initalize this
 
         public Form1()
         {
