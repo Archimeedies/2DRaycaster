@@ -24,6 +24,7 @@ namespace _2d_raycaster_project
         const float MOVE_SPEED = 0.1f; // adjust for player move seed
         const float MOUSE_SENSITIVITY = 0.002f; // adjust for player mouse speed
         const float FOV = (float)Math.PI / 3; // still have to find a way to initalize this
+        const float JUMP_STRENGTH = 0; // still have to find a way to implement this
 
         public Form1()
         {
