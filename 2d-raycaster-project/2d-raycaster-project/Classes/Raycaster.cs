@@ -175,8 +175,8 @@ namespace _2d_raycaster_project
                 int lineHeight = (int)(screenHeight / perpWallDist);
 
                 // Calculate lowest and highest pixel to fill in current stripe
-                int drawStart = -lineHeight / 2 + screenHeight / 2;
-                if (drawStart < 0) drawStart = 0;
+                int drawStart = screenHeight / 2 + lineHeight / 2;
+                if (drawStart >= screenHeight) drawStart = screenHeight - 1;
 
                 // Choose wall color or texture
                 Bitmap texture;
