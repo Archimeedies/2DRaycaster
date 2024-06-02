@@ -18,6 +18,10 @@ namespace _2d_raycaster_project
         // Player instance
         private Player player;
 
+        // floor and ceiling variables
+        private bool isFloorCeilingInitialized = false;
+        private Bitmap floorCeilingBitmap;
+
         // fps tracker
         private Stopwatch stopwatch = new Stopwatch();
         private int frameCount = 0;
@@ -30,9 +34,9 @@ namespace _2d_raycaster_project
         private int[,] map = new int[MAP_WIDTH, MAP_HEIGHT]
         {
                     {1,1,1,1,1,1,1,1,1,1},
-                    {2,0,0,0,0,0,0,3,0,2},
-                    {2,0,0,0,0,0,0,3,0,2},
-                    {2,0,0,0,0,0,0,3,0,2},
+                    {2,0,0,0,0,3,0,3,0,2},
+                    {2,0,0,0,0,3,0,3,0,2},
+                    {2,0,0,0,0,3,0,3,0,2},
                     {2,0,0,0,0,0,0,0,0,2},
                     {2,0,0,0,0,0,0,0,0,2},
                     {2,0,0,0,0,0,0,0,0,2},
@@ -57,6 +61,28 @@ namespace _2d_raycaster_project
             wallTextures.Add(3, Properties.Resources.WoodTexture);
             // Add more textures as needed
         }
+        private void InitializeFloorCeiling(int screenWidth, int screenHeight)
+        {
+            floorCeilingBitmap = new Bitmap(screenWidth, screenHeight);
+            using (Graphics g = Graphics.FromImage(floorCeilingBitmap))
+            {
+                // Draw floor and ceiling with gradient
+                for (int i = screenHeight / 2; i < screenHeight; i++)
+                {
+                    // Floor color gradient
+                    int gradientFactor = (int)(255 * (i - screenHeight / 2) / (screenHeight / 2));
+                    Color floorColor = Color.FromArgb(gradientFactor, gradientFactor, gradientFactor);
+                    g.DrawLine(new Pen(floorColor), 0, i, screenWidth, i);
+
+                    // Ceiling color gradient
+                    gradientFactor = 255 - gradientFactor;
+                    Color ceilingColor = Color.FromArgb(gradientFactor, gradientFactor, 255);
+                    g.DrawLine(new Pen(ceilingColor), 0, screenHeight - i, screenWidth, screenHeight - i);
+                }
+            }
+            isFloorCeilingInitialized = true;
+        }
+
         public void Update()
         {
             // clear the screen
@@ -65,19 +91,14 @@ namespace _2d_raycaster_project
             int screenWidth = _clientSize.Width;
             int screenHeight = _clientSize.Height;
 
-            // Draw floor and ceiling with gradient
-            for (int i = screenHeight / 2; i < screenHeight; i++)
+            // Initialize floor and ceiling drawing if not done already
+            if (!isFloorCeilingInitialized)
             {
-                // Floor color gradient
-                int gradientFactor = (int)(255 * (i - screenHeight / 2) / (screenHeight / 2));
-                Color floorColor = Color.FromArgb(gradientFactor, gradientFactor, gradientFactor);
-                _graphics.DrawLine(new Pen(floorColor), 0, i, screenWidth, i);
-
-                // Ceiling color gradient
-                gradientFactor = 255 - gradientFactor;
-                Color ceilingColor = Color.FromArgb(gradientFactor, gradientFactor, 255);
-                _graphics.DrawLine(new Pen(ceilingColor), 0, screenHeight - i, screenWidth, screenHeight - i);
+                InitializeFloorCeiling(screenWidth, screenHeight);
             }
+
+            // Draw the pre-rendered floor and ceiling
+            _graphics.DrawImage(floorCeilingBitmap, 0, 0);
 
             // raycasting
             for (int i = 0; i < screenWidth; i++)
@@ -181,19 +202,20 @@ namespace _2d_raycaster_project
                         break;
                 }
 
-                // Calculate texture coordinates based on wall hit
-                double wallHitX;
-                if (side == 0) // Ray hits a vertical wall
-                {
-                    wallHitX = player.Y + perpWallDist * rayDirY;
-                }
-                else // Ray hits a horizontal wall
-                {
-                    wallHitX = player.X + perpWallDist * rayDirX;
-                }
-                wallHitX -= Math.Floor(wallHitX); // Normalize wallHitX to a fraction between 0 and 1
                 if (texture != null)
                 {
+                    // Calculate texture coordinates based on wall hit
+                    double wallHitX;
+                    if (side == 0) // Ray hits a vertical wall
+                    {
+                        wallHitX = player.Y + perpWallDist * rayDirY;
+                    }
+                    else // Ray hits a horizontal wall
+                    {
+                        wallHitX = player.X + perpWallDist * rayDirX;
+                    }
+                    wallHitX -= Math.Floor(wallHitX); // Normalize wallHitX to a fraction between 0 and 1
+
                     // Calculate texture coordinates based on wall hit
                     int texX = (int)(texture.Width * wallHitX);
 

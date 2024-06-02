@@ -46,7 +46,7 @@ namespace _2d_raycaster_project
 
         private void Form1_KeyDown_1(object sender, KeyEventArgs e)
         {
-            float moveSpeed = 0.1f;
+            float moveSpeed = 0.05f;
             controller.KeyMovement(e, moveSpeed);
         }
         private void Form1_MouseMove(object sender, MouseEventArgs e)
