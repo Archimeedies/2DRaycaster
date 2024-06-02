@@ -8,6 +8,7 @@ namespace _2d_raycaster_project
 {
     public partial class Form1 : Form
     {
+        // graphics
         private Bitmap offScreenBitmap;
         private Graphics offScreenGraphics;
         private Graphics graphics;
@@ -38,7 +39,7 @@ namespace _2d_raycaster_project
             controller = new Controller(offScreenBitmap, offScreenGraphics, ClientSize);
 
             // timer settings
-            timer1.Interval = 1; // Approximately 60 FPS
+            timer1.Interval = 1; // 16 should be approximately 60 FPS, set to 1 for more updates per second
             timer1.Start();
 
             // Capture the mouse
