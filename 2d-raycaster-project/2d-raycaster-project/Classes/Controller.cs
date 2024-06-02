@@ -34,6 +34,9 @@ namespace _2d_raycaster_project
                 case Keys.D:
                     raycaster.MoveRight(moveSpeed);
                     break;
+                case Keys.Space:
+                    raycaster.MoveJump();
+                    break;
                 case Keys.Escape:
                     Application.Exit();
                     break;

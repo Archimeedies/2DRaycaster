@@ -17,6 +17,7 @@ namespace _2d_raycaster_project
 
         // Player instance
         private Player player;
+        private bool isJumping = false;
 
         // floor and ceiling variables
         private bool isFloorCeilingInitialized = false;
@@ -174,9 +175,18 @@ namespace _2d_raycaster_project
                 // Calculate height of line to draw on screen
                 int lineHeight = (int)(screenHeight / perpWallDist);
 
-                // Calculate lowest and highest pixel to fill in current stripe
-                int drawStart = screenHeight / 2 + lineHeight / 2;
-                if (drawStart >= screenHeight) drawStart = screenHeight - 1;
+                int drawStart;
+                if (isJumping)
+                {
+                    // Calculate lowest and highest pixel to fill in current stripe
+                    drawStart = screenHeight / 2 + lineHeight / 2;
+                    if (drawStart >= screenHeight) drawStart = screenHeight - 1;
+                }
+                else
+                {
+                    drawStart = -lineHeight / 2 + screenHeight / 2;
+                    if (drawStart < 0) drawStart = 0;
+                }
 
                 // Choose wall color or texture
                 Bitmap texture;
@@ -351,6 +361,10 @@ namespace _2d_raycaster_project
             {
                 PlayerSlide(newX, newY);
             }
+        }
+        public void MoveJump()
+        {
+            isJumping = true;
         }
         public void MouseMove(Form form, ref Point lastMousePosition, float sensitivity)
         {
