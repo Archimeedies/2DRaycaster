@@ -93,8 +93,8 @@ namespace _2d_raycaster_project
             // rendering walls
             RenderWalls(screenWidth, screenHeight);
 
-            // Render sprites
-            RenderSprites(screenWidth, screenHeight);
+            //// UNCOMMENT TO Render sprites
+            //RenderSprites(screenWidth, screenHeight);
 
             // update FPS
             CalculateFPS();
