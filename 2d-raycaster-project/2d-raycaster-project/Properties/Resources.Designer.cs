@@ -63,9 +63,9 @@ namespace _2d_raycaster_project.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap BrickTexture {
+        internal static System.Drawing.Bitmap barrel {
             get {
-                object obj = ResourceManager.GetObject("BrickTexture", resourceCulture);
+                object obj = ResourceManager.GetObject("barrel", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace _2d_raycaster_project.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap MossyTexture {
+        internal static System.Drawing.Bitmap bluestone {
             get {
-                object obj = ResourceManager.GetObject("MossyTexture", resourceCulture);
+                object obj = ResourceManager.GetObject("bluestone", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +83,89 @@ namespace _2d_raycaster_project.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap WoodTexture {
+        internal static System.Drawing.Bitmap colorstone {
             get {
-                object obj = ResourceManager.GetObject("WoodTexture", resourceCulture);
+                object obj = ResourceManager.GetObject("colorstone", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap eagle {
+            get {
+                object obj = ResourceManager.GetObject("eagle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap greenlight {
+            get {
+                object obj = ResourceManager.GetObject("greenlight", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap greystone {
+            get {
+                object obj = ResourceManager.GetObject("greystone", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mossy {
+            get {
+                object obj = ResourceManager.GetObject("mossy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap pillar {
+            get {
+                object obj = ResourceManager.GetObject("pillar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap purplestone {
+            get {
+                object obj = ResourceManager.GetObject("purplestone", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap redbrick {
+            get {
+                object obj = ResourceManager.GetObject("redbrick", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap wood {
+            get {
+                object obj = ResourceManager.GetObject("wood", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

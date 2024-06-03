@@ -93,6 +93,30 @@
     <None Include="Resources\wood.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\pillar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\purplestone.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bluestone.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\colorstone.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\eagle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\greenlight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\greystone.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\barrel.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Resources\mossy.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

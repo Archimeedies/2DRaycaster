@@ -118,13 +118,37 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="BrickTexture" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\redbrick.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="barrel" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\barrel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="MossyTexture" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="bluestone" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bluestone.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="colorstone" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\colorstone.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="eagle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\eagle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="greenlight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\greenlight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="greystone" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\greystone.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="mossy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\mossy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="WoodTexture" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="pillar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pillar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="purplestone" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\purplestone.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="redbrick" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\redbrick.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="wood" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\wood.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

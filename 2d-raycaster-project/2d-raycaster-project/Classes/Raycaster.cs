@@ -33,19 +33,19 @@ namespace _2d_raycaster_project
         private float FOV = 2.7f; // Edit this for FOV settings
 
         private const int MAP_WIDTH = 10;
-        private const int MAP_HEIGHT = 10;
+        private const int MAP_HEIGHT = 11;
         private int[,] map = new int[MAP_WIDTH, MAP_HEIGHT]
         {
-                    {1,1,1,1,1,1,1,1,1,1},
-                    {2,0,0,0,0,3,0,3,0,2},
-                    {2,0,0,0,0,3,0,3,0,2},
-                    {2,0,0,0,0,3,0,3,0,2},
-                    {2,0,0,0,0,0,0,0,0,2},
-                    {2,0,0,0,0,0,0,0,0,2},
-                    {2,0,0,0,0,0,0,0,0,2},
-                    {2,0,0,0,0,0,0,0,0,2},
-                    {2,0,0,0,0,0,0,0,0,2},
-                    {1,1,1,1,1,1,1,1,1,1}
+                    {1,1,1,1,1,1,1,1,1,1,1},
+                    {2,0,0,0,0,3,0,3,0,0,1},
+                    {2,0,0,0,0,3,0,3,0,0,1},
+                    {2,0,0,0,0,3,0,3,0,0,1},
+                    {2,0,0,0,0,0,0,0,0,0,1},
+                    {2,0,0,0,0,0,0,0,0,0,1},
+                    {2,0,0,0,0,0,0,0,0,0,1},
+                    {2,0,0,0,0,0,0,0,0,0,1},
+                    {2,0,0,0,0,0,0,0,0,0,1},
+                    {1,1,1,1,1,1,1,1,1,1,1}
         };
         private Dictionary<int, Bitmap> wallTextures = new Dictionary<int, Bitmap>(); // Map wall types to texture images
         public Raycaster(Bitmap bitmap, Graphics graphics, Size clientSize)
@@ -59,9 +59,9 @@ namespace _2d_raycaster_project
         }
         private void LoadTextures()
         {
-            wallTextures.Add(1, Properties.Resources.BrickTexture); // Example: Brick texture
-            wallTextures.Add(2, Properties.Resources.MossyTexture); // Example: Mossy texture
-            wallTextures.Add(3, Properties.Resources.WoodTexture);
+            wallTextures.Add(1, Properties.Resources.redbrick); // Example: Brick texture
+            wallTextures.Add(2, Properties.Resources.mossy); // Example: Mossy texture
+            wallTextures.Add(3, Properties.Resources.wood);
             // Add more textures as needed
         }
         private void InitializeFloorCeiling(int screenWidth, int screenHeight)
@@ -85,6 +85,7 @@ namespace _2d_raycaster_project
             }
             isFloorCeilingInitialized = true;
         }
+
         public void Update()
         {
             // clear the screen
