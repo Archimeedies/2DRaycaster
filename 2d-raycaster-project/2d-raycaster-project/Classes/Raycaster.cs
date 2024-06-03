@@ -64,6 +64,30 @@ namespace _2d_raycaster_project
             wallTextures.Add(3, Properties.Resources.wood);
             // Add more textures as needed
         }
+        public void Update()
+        {
+            // clear the screen
+            _graphics.FillRectangle(Brushes.Black, 0, 0, _clientSize.Width, _clientSize.Height);
+
+            int screenWidth = _clientSize.Width;
+            int screenHeight = _clientSize.Height;
+
+            // Initialize floor and ceiling drawing if not done already
+            if (!isFloorCeilingInitialized)
+            {
+                InitializeFloorCeiling(screenWidth, screenHeight);
+            }
+            // Draw the pre-rendered floor and ceiling
+            _graphics.DrawImage(floorCeilingBitmap, 0, 0);
+
+            // rendering walls
+            RenderWalls(screenWidth, screenHeight);
+
+            // update FPS
+            CalculateFPS();
+
+            _graphics.DrawImage(_bitmap, 0, 0);
+        }
         private void InitializeFloorCeiling(int screenWidth, int screenHeight)
         {
             floorCeilingBitmap = new Bitmap(screenWidth, screenHeight);
@@ -85,23 +109,8 @@ namespace _2d_raycaster_project
             }
             isFloorCeilingInitialized = true;
         }
-
-        public void Update()
+        private void RenderWalls(int screenWidth, int screenHeight)
         {
-            // clear the screen
-            _graphics.FillRectangle(Brushes.Black, 0, 0, _clientSize.Width, _clientSize.Height);
-
-            int screenWidth = _clientSize.Width;
-            int screenHeight = _clientSize.Height;
-
-            // Initialize floor and ceiling drawing if not done already
-            if (!isFloorCeilingInitialized)
-            {
-                InitializeFloorCeiling(screenWidth, screenHeight);
-            }
-            // Draw the pre-rendered floor and ceiling
-            _graphics.DrawImage(floorCeilingBitmap, 0, 0);
-
             // raycasting
             for (int i = 0; i < screenWidth; i++)
             {
@@ -112,7 +121,7 @@ namespace _2d_raycaster_project
 
                 // Which box of the map we're in
                 int mapX = (int)player.X;
-                int mapY = (int)player.Y;   
+                int mapY = (int)player.Y;
 
                 // Length of ray from one x or y-side to next x or y-side
                 float deltaDistX = Math.Abs(1 / rayDirX);
@@ -195,7 +204,7 @@ namespace _2d_raycaster_project
                 {
                     drawStart = -lineHeight / 2 + screenHeight / 2;
                 }
-             
+
 
                 // Choose wall color or texture
                 Bitmap texture;
@@ -240,7 +249,9 @@ namespace _2d_raycaster_project
                     _graphics.DrawImage(texture, destRect, srcRect, GraphicsUnit.Pixel);
                 }
             }
-
+        }
+        private void CalculateFPS()
+        {
             // calculate FPS
             frameCount++;
             if (frameCount >= fpsUpdateInterval)
@@ -253,8 +264,6 @@ namespace _2d_raycaster_project
             //draw FPS
             string fpsText = $"FPS: {fps:F0}";
             _graphics.DrawString(fpsText, new Font("Arial", 12), Brushes.White, new PointF(10, 10));
-
-            _graphics.DrawImage(_bitmap, 0, 0);
         }
 
         // player movement
