@@ -94,13 +94,13 @@ namespace _2d_raycaster_project
             int screenWidth = _clientSize.Width;
             int screenHeight = _clientSize.Height;
 
-            // Initialize floor and ceiling drawing if not done already
-            if (!isFloorCeilingInitialized)
-            {
-                InitializeFloorCeiling(screenWidth, screenHeight);
-            }
-            // Draw the pre-rendered floor and ceiling
-            _graphics.DrawImage(floorCeilingBitmap, 0, 0);
+            //// Initialize floor and ceiling drawing if not done already
+            //if (!isFloorCeilingInitialized)
+            //{
+            //    InitializeFloorCeiling(screenWidth, screenHeight);
+            //}
+            //// Draw the pre-rendered floor and ceiling
+            //_graphics.DrawImage(floorCeilingBitmap, 0, 0);
 
             // raycasting
             for (int i = 0; i < screenWidth; i++)
