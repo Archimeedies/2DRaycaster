@@ -40,16 +40,16 @@ namespace _2d_raycaster_project
         private const int MAP_HEIGHT = 11;
         private int[,] map = new int[MAP_WIDTH, MAP_HEIGHT]
         {
-                    {1,1,1,1,1,1,1,1,1,1,1},
-                    {2,0,0,0,0,3,0,3,0,0,1},
-                    {2,0,0,0,0,3,0,3,0,0,1},
-                    {2,0,0,0,0,3,0,3,0,0,1},
-                    {2,0,0,0,0,0,0,0,0,0,1},
-                    {2,0,0,0,0,0,0,0,0,0,1},
-                    {2,0,0,0,0,0,0,0,0,0,1},
-                    {2,0,0,0,0,0,0,0,0,0,1},
-                    {2,0,0,0,0,0,0,0,0,0,1},
-                    {1,1,1,1,1,1,1,1,1,1,1}
+                    {0,1,4,4,1,0,1,0,1,1,0},
+                    {2,0,0,0,0,3,0,3,0,0,5},
+                    {2,0,0,0,0,3,0,3,0,0,5},
+                    {2,0,0,0,0,3,0,3,0,0,5},
+                    {2,0,0,0,0,0,0,0,0,0,5},
+                    {2,0,0,0,0,0,0,0,0,0,5},
+                    {2,0,0,0,0,0,0,0,0,0,5},
+                    {2,0,0,0,0,0,0,0,0,0,5},
+                    {2,0,0,0,0,0,0,0,0,0,5},
+                    {0,6,6,6,6,6,6,6,6,6,0}
         };
         private Dictionary<int, Bitmap> wallTextures = new Dictionary<int, Bitmap>(); // Map wall types to texture images
         public Raycaster(Bitmap bitmap, Graphics graphics, Size clientSize)
@@ -67,6 +67,9 @@ namespace _2d_raycaster_project
             wallTextures.Add(1, Properties.Resources.redbrick); // Example: Brick texture
             wallTextures.Add(2, Properties.Resources.mossy); // Example: Mossy texture
             wallTextures.Add(3, Properties.Resources.wood);
+            wallTextures.Add(4, Properties.Resources.eagle);
+            wallTextures.Add(5, Properties.Resources.bluestone);
+            wallTextures.Add(6, Properties.Resources.greystone);
             // Add more textures as needed
         }
         private void LoadSprites()
@@ -231,6 +234,15 @@ namespace _2d_raycaster_project
                         break;
                     case 3:
                         texture = wallTextures[3]; // Use the wood texture for this wall type
+                        break;
+                    case 4:
+                        texture = wallTextures[4];
+                        break;
+                    case 5:
+                        texture = wallTextures[5];
+                        break;
+                    case 6:
+                        texture = wallTextures[6]; 
                         break;
                     default:
                         texture = null; // No texture for this wall type
