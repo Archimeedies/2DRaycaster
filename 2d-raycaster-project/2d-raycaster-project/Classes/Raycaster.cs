@@ -11,7 +11,6 @@ namespace _2d_raycaster_project
 {
     public class Raycaster
     {
-        private Bitmap _bitmap;
         private Graphics _graphics;
         private Size _clientSize;
 
@@ -48,9 +47,8 @@ namespace _2d_raycaster_project
                     {1,1,1,1,1,1,1,1,1,1,1}
         };
         private Dictionary<int, Bitmap> wallTextures = new Dictionary<int, Bitmap>(); // Map wall types to texture images
-        public Raycaster(Bitmap bitmap, Graphics graphics, Size clientSize)
+        public Raycaster(Graphics graphics, Size clientSize)
         {
-            this._bitmap = bitmap;
             this._graphics = graphics;
             this._clientSize = clientSize;
             player = new Player(1.5f, 1.5f, 0.0f, (float)Math.PI / FOV); // Starting at (1.5, 1.5), looking straight ahead, with a 60 degree FOV
@@ -66,9 +64,6 @@ namespace _2d_raycaster_project
         }
         public void Update()
         {
-            // clear the screen
-            _graphics.FillRectangle(Brushes.Black, 0, 0, _clientSize.Width, _clientSize.Height);
-
             int screenWidth = _clientSize.Width;
             int screenHeight = _clientSize.Height;
 
@@ -85,8 +80,6 @@ namespace _2d_raycaster_project
 
             // update FPS
             CalculateFPS();
-
-            _graphics.DrawImage(_bitmap, 0, 0);
         }
         private void InitializeFloorCeiling(int screenWidth, int screenHeight)
         {
