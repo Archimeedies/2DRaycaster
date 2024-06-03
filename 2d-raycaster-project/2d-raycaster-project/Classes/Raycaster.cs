@@ -1,4 +1,5 @@
-﻿using System;
+﻿using _2d_raycaster_project.Classes;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -11,6 +12,7 @@ namespace _2d_raycaster_project
 {
     public class Raycaster
     {
+        private Bitmap _bitmap;
         private Graphics _graphics;
         private Size _clientSize;
 
@@ -18,6 +20,9 @@ namespace _2d_raycaster_project
         private Player player;
         private bool isJumping = false;
         private int jumpTime = 0;
+
+        // sprites
+        private List<Sprite> sprites = new List<Sprite>();
 
         // floor and ceiling variables
         private bool isFloorCeilingInitialized = false;
@@ -47,13 +52,15 @@ namespace _2d_raycaster_project
                     {1,1,1,1,1,1,1,1,1,1,1}
         };
         private Dictionary<int, Bitmap> wallTextures = new Dictionary<int, Bitmap>(); // Map wall types to texture images
-        public Raycaster(Graphics graphics, Size clientSize)
+        public Raycaster(Bitmap bitmap, Graphics graphics, Size clientSize)
         {
             this._graphics = graphics;
             this._clientSize = clientSize;
+            this._bitmap = bitmap;
             player = new Player(1.5f, 1.5f, 0.0f, (float)Math.PI / FOV); // Starting at (1.5, 1.5), looking straight ahead, with a 60 degree FOV
 
             LoadTextures();
+            LoadSprites();
         }
         private void LoadTextures()
         {
@@ -62,8 +69,16 @@ namespace _2d_raycaster_project
             wallTextures.Add(3, Properties.Resources.wood);
             // Add more textures as needed
         }
+        private void LoadSprites()
+        {
+            Bitmap barrelTexture = Properties.Resources.newbarrel; // Example texture
+            sprites.Add(new Sprite(2.5f, 2.5f, barrelTexture)); // Add more sprites as needed, first to floats are where the sprite spawns in the map
+        }
         public void Update()
         {
+            // clear the screen
+            _graphics.FillRectangle(Brushes.Black, 0, 0, _clientSize.Width, _clientSize.Height);
+
             int screenWidth = _clientSize.Width;
             int screenHeight = _clientSize.Height;
 
@@ -78,8 +93,13 @@ namespace _2d_raycaster_project
             // rendering walls
             RenderWalls(screenWidth, screenHeight);
 
+            // Render sprites
+            RenderSprites(screenWidth, screenHeight);
+
             // update FPS
             CalculateFPS();
+
+            _graphics.DrawImage(_bitmap, 0, 0);
         }
         private void InitializeFloorCeiling(int screenWidth, int screenHeight)
         {
@@ -241,6 +261,44 @@ namespace _2d_raycaster_project
                     // Draw the textured vertical line
                     _graphics.DrawImage(texture, destRect, srcRect, GraphicsUnit.Pixel);
                 }
+            }
+        }
+        private void RenderSprites(int screenWidth, int screenHeight)
+        {
+            // Sort sprites by distance from player (farthest to closest)
+            var sortedSprites = sprites.OrderByDescending(s => Math.Pow(player.X - s.X, 2) + Math.Pow(player.Y - s.Y, 2)).ToList();
+
+            foreach (var sprite in sortedSprites)
+            {
+                // Calculate sprite position relative to the player
+                float spriteX = sprite.X - player.X;
+                float spriteY = sprite.Y - player.Y;
+
+                // Inverse camera matrix to transform sprite position to camera space
+                float invDet = 1.0f / (player.PlaneX * player.DirectionY - player.DirectionX * player.PlaneY);
+                float transformX = invDet * (player.DirectionY * spriteX - player.DirectionX * spriteY);
+                float transformY = invDet * (-player.PlaneY * spriteX + player.PlaneX * spriteY);
+
+                int spriteScreenX = (int)((screenWidth / 2) * (1 + transformX / transformY));
+
+                // Calculate height and width of the sprite on screen
+                int spriteHeight = Math.Abs((int)(screenHeight / transformY));
+                int spriteWidth = spriteHeight; // Assume square sprites for simplicity
+
+                int drawStartY = -spriteHeight / 2 + screenHeight / 2;
+                if (drawStartY < 0) drawStartY = 0;
+                int drawEndY = spriteHeight / 2 + screenHeight / 2;
+                if (drawEndY >= screenHeight) drawEndY = screenHeight - 1;
+
+                int drawStartX = -spriteWidth / 2 + spriteScreenX;
+                if (drawStartX < 0) drawStartX = 0;
+                int drawEndX = spriteWidth / 2 + spriteScreenX;
+                if (drawEndX >= screenWidth) drawEndX = screenWidth - 1;
+
+                // Draw the sprite
+                Rectangle srcRect = new Rectangle(0, 0, sprite.Texture.Width, sprite.Texture.Height);
+                Rectangle destRect = new Rectangle(drawStartX, drawStartY, drawEndX - drawStartX, drawEndY - drawStartY);
+                _graphics.DrawImage(sprite.Texture, destRect, srcRect, GraphicsUnit.Pixel);
             }
         }
         private void CalculateFPS()

@@ -8,9 +8,9 @@ namespace _2d_raycaster_project
     {
         private Raycaster raycaster;
 
-        public Controller(Graphics graphics, Size clientSize)
+        public Controller(Bitmap bitmap, Graphics graphics, Size clientSize)
         {
-            raycaster = new Raycaster(graphics, clientSize);
+            raycaster = new Raycaster(bitmap, graphics, clientSize);
         }
 
         public void Run()

@@ -37,7 +37,7 @@ namespace _2d_raycaster_project
             this.DoubleBuffered = true;
 
             // initializing classes
-            controller = new Controller(offScreenGraphics, ClientSize);
+            controller = new Controller(offScreenBitmap, offScreenGraphics, ClientSize);
 
             // timer settings
             timer1.Interval = 1; // 16 should be approximately 60 FPS, set to 1 for more updates per second

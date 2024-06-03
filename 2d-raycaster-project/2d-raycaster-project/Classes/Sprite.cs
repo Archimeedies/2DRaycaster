@@ -9,20 +9,14 @@ namespace _2d_raycaster_project.Classes
 {
     public class Sprite
     {
-        public PointF Position { get; set; }
-        public SizeF Size { get; set; }
+        public float X { get; set; }
+        public float Y { get; set; }
         public Bitmap Texture { get; set; }
-
-        public float ScreenX { get; set; }
-        public float ScreenY { get; set; }
-
-        public Sprite(PointF position, SizeF size, Bitmap texture)
+        public Sprite(float x, float y, Bitmap texture)
         {
-            Position = position;
-            Size = size;
+            X = x;
+            Y = y;
             Texture = texture;
         }
     }
-
-
 }

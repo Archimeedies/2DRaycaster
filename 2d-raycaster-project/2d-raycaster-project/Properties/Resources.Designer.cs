@@ -133,6 +133,16 @@ namespace _2d_raycaster_project.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap newbarrel {
+            get {
+                object obj = ResourceManager.GetObject("newbarrel", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap pillar {
             get {
                 object obj = ResourceManager.GetObject("pillar", resourceCulture);
