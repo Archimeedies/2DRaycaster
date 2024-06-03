@@ -20,9 +20,9 @@ namespace _2d_raycaster_project
         private bool isJumping = false;
         private int jumpTime = 0;
 
-        // floor and ceiling variables
-        private bool isFloorCeilingInitialized = false;
-        private Bitmap floorCeilingBitmap;
+        // ceiling variables
+        private bool isCeilingInitialized = false;
+        private Bitmap ceilingBitmap;
 
         // fps tracker
         private Stopwatch stopwatch = new Stopwatch();
@@ -62,20 +62,73 @@ namespace _2d_raycaster_project
             wallTextures.Add(1, Properties.Resources.redbrick); // Example: Brick texture
             wallTextures.Add(2, Properties.Resources.mossy); // Example: Mossy texture
             wallTextures.Add(3, Properties.Resources.wood);
+            wallTextures.Add(4, Properties.Resources.colorstone);
             // Add more textures as needed
         }
-        private void InitializeFloorCeiling(int screenWidth, int screenHeight)
+        private void DrawFloor(int screenHeight, int screenWidth)
         {
-            floorCeilingBitmap = new Bitmap(screenWidth, screenHeight);
-            using (Graphics g = Graphics.FromImage(floorCeilingBitmap))
+            for (int y = screenHeight / 2; y < screenHeight; y++)
             {
-                // Draw floor and ceiling with gradient
+                // rayDir for leftmost ray (x = 0) and rightmost ray (x = screenWidth)
+                float rayDirX0 = player.DirectionX - player.PlaneX;
+                float rayDirY0 = player.DirectionY - player.PlaneY;
+                float rayDirX1 = player.DirectionX + player.PlaneX;
+                float rayDirY1 = player.DirectionY + player.PlaneY;
+
+                // Current y position compared to the center of the screen (the horizon)
+                int p = y - screenHeight / 2;
+
+                // Vertical position of the camera.
+                float posZ = (float)0.5 * screenHeight;
+
+                // Horizontal distance from the camera to the floor for the current row.
+                // 0.5 is the z position exactly in the middle between floor and ceiling.
+                float rowDistance = posZ / p;
+
+                // calculate the real world step vector we have to add for each x (parallel to camera plane)
+                // adding step by step avoids multiplications with a weight in the inner loop
+                float floorStepX = rowDistance * (rayDirX1 - rayDirX0) / screenWidth;
+                float floorStepY = rowDistance * (rayDirY1 - rayDirY0) / screenWidth;
+
+                // real world coordinates of the leftmost column. This will be updated as we step to the right.
+                float floorX = player.X + rowDistance * rayDirX0;
+                float floorY = player.Y + rowDistance * rayDirY0;
+
+                for (int x = 0; x < screenWidth; x++)
+                {
+                    // the cell coord is simply got from the integer parts of floorX and floorY
+                    int cellX = (int)floorX;
+                    int cellY = (int)floorY;
+
+                    // Choose a floor texture. For now, we use the same as wall texture 4
+                    Bitmap floorTexture = wallTextures[4];
+
+                    // get the texture coordinate from the fractional part
+                    int tx = (int)(floorTexture.Width * (floorX - cellX)) & (floorTexture.Width - 1);
+                    int ty = (int)(floorTexture.Height * (floorY - cellY)) & (floorTexture.Height - 1);
+
+                    floorX += floorStepX;
+                    floorY += floorStepY;
+
+                    // Get the color from the texture
+                    Color color = floorTexture.GetPixel(tx, ty);
+
+                    // Draw the pixel on the bitmap
+                    _bitmap.SetPixel(x, y, color);
+                }
+            }
+        }
+
+        private void InitializeCeiling(int screenWidth, int screenHeight)
+        {
+            ceilingBitmap = new Bitmap(screenWidth, screenHeight);
+            using (Graphics g = Graphics.FromImage(ceilingBitmap))
+            {
+                // Draw ceiling with gradient
                 for (int i = screenHeight / 2; i < screenHeight; i++)
                 {
-                    // Floor color gradient
+                    // Gradien factor
                     int gradientFactor = (int)(255 * (i - screenHeight / 2) / (screenHeight / 2));
-                    Color floorColor = Color.FromArgb(gradientFactor, gradientFactor, gradientFactor);
-                    g.DrawLine(new Pen(floorColor), 0, i, screenWidth, i);
 
                     // Ceiling color gradient
                     gradientFactor = 255 - gradientFactor;
@@ -83,7 +136,7 @@ namespace _2d_raycaster_project
                     g.DrawLine(new Pen(ceilingColor), 0, screenHeight - i, screenWidth, screenHeight - i);
                 }
             }
-            isFloorCeilingInitialized = true;
+            isCeilingInitialized = true;
         }
 
         public void Update()
@@ -95,12 +148,15 @@ namespace _2d_raycaster_project
             int screenHeight = _clientSize.Height;
 
             // Initialize floor and ceiling drawing if not done already
-            if (!isFloorCeilingInitialized)
+            if (!isCeilingInitialized)
             {
-                InitializeFloorCeiling(screenWidth, screenHeight);
+                InitializeCeiling(screenWidth, screenHeight);
             }
             // Draw the pre-rendered floor and ceiling
-            _graphics.DrawImage(floorCeilingBitmap, 0, 0);
+            _graphics.DrawImage(ceilingBitmap, 0, 0);
+
+            // Render floor
+            DrawFloor(screenHeight, screenWidth);
 
             // raycasting
             for (int i = 0; i < screenWidth; i++)
