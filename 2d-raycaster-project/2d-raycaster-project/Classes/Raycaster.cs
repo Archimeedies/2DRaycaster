@@ -86,7 +86,7 @@ namespace _2d_raycaster_project
         private void LoadSprites()
         {
             Bitmap barrelTexture = Properties.Resources.newbarrel; // Example texture
-            sprites.Add(new Sprite(2.5f, 2.5f, barrelTexture)); // Add more sprites as needed, first to floats are where the sprite spawns in the map
+            sprites.Add(new Sprite(1.5f, 6.5f, barrelTexture)); // Add more sprites as needed, first to floats are where the sprite spawns in the map
         }
         public void Update()
         {
@@ -109,13 +109,15 @@ namespace _2d_raycaster_project
             // rendering floors
             RenderFloor(screenWidth, screenHeight);
 
+
             // rendering walls
             RenderWalls(screenWidth, screenHeight);
 
-            UpdatePlayerMovement();
+            // UNCOMMENT TO Render sprites
+            RenderSprites(screenWidth, screenHeight);
 
-            //// UNCOMMENT TO Render sprites
-            //RenderSprites(screenWidth, screenHeight);
+            // update player movements
+            UpdatePlayerMovement();
 
             // update FPS
             CalculateFPS();
@@ -328,6 +330,12 @@ namespace _2d_raycaster_project
                 float spriteX = sprite.X - player.X;
                 float spriteY = sprite.Y - player.Y;
 
+                // Perform visibility and occlusion checks here
+                if (!IsSpriteVisible(spriteX, spriteY))
+                {
+                    continue; // Skip rendering if the sprite is not visible
+                }
+
                 // Inverse camera matrix to transform sprite position to camera space
                 float invDet = 1.0f / (player.PlaneX * player.DirectionY - player.DirectionX * player.PlaneY);
                 float transformX = invDet * (player.DirectionY * spriteX - player.DirectionX * spriteY);
@@ -355,6 +363,43 @@ namespace _2d_raycaster_project
                 _graphics.DrawImage(sprite.Texture, destRect, srcRect, GraphicsUnit.Pixel);
             }
         }
+        private bool IsSpriteVisible(float spriteX, float spriteY)
+        {
+            // Calculate the angle between the player's direction and the sprite
+            float angleToSprite = (float)(Math.Atan2(spriteY, spriteX) - Math.Atan2(player.DirectionY, player.DirectionX));
+            angleToSprite = (angleToSprite + (float)(Math.PI * 2)) % ((float)Math.PI * 2); // Normalize angle to [0, 2π]
+
+            // Perform raycasting to check if the sprite is obstructed by walls
+            float distanceToSprite = (float)Math.Sqrt(spriteX * spriteX + spriteY * spriteY);
+            float rayDirX = spriteX / distanceToSprite;
+            float rayDirY = spriteY / distanceToSprite;
+
+            float stepSize = 0.1f; // Adjust as needed for accuracy vs performance
+
+            // Start at player position and incrementally check along the ray direction
+            float rayX = player.X;
+            float rayY = player.Y;
+            float rayDistance = 0;
+
+            while (rayDistance < distanceToSprite)
+            {
+                rayX += rayDirX * stepSize;
+                rayY += rayDirY * stepSize;
+                rayDistance += stepSize;
+
+                // Check if the current position intersects with a wall
+                int mapX = (int)Math.Floor(rayX);
+                int mapY = (int)Math.Floor(rayY);
+
+                if (mapX >= 0 && mapX < MAP_WIDTH && mapY >= 0 && mapY < MAP_HEIGHT && map[mapX, mapY] > 0)
+                {
+                    return false; // Sprite is obstructed by a wall
+                }
+            }
+
+            return true; // Sprite is visible and not obstructed
+        }
+
         private void CalculateFPS()
         {
             // calculate FPS

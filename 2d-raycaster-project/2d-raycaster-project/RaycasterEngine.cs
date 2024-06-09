@@ -13,7 +13,7 @@ namespace _2d_raycaster_project
         private const int HEIGHT = 480;
         //private const int WIDTH = 960;
         //private const int HEIGHT = 540;
-        private int upscaleFactor = 4;
+        private int upscaleFactor = 3;
         
 
         // graphics
