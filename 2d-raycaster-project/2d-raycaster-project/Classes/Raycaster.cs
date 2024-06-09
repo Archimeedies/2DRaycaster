@@ -257,77 +257,67 @@ namespace _2d_raycaster_project
 
                 // Calculate height of line to draw on screen
                 int lineHeight = (int)(screenHeight / perpWallDist);
-
-                // Calculates whether the player is jumping or not, and push the wall rendering down
-                // to appear jumping
+                // Calculate the drawing start and end positions for the wall, considering whether the player is jumping or not
                 int drawStart;
+                int drawEnd = 0;
+
                 if (isJumping)
                 {
+                    // If the player is jumping, adjust the draw start position to create a jumping effect
                     jumpTime++;
-                    drawStart = screenHeight / 2 + lineHeight / -5;
+                    drawStart = screenHeight / 2 + lineHeight / -5; // Push the wall rendering down to appear as if jumping
                     if (jumpTime == 9500)
                     {
+                        // End the jump after a certain period
                         isJumping = false;
                         jumpTime = 0;
                     }
                 }
                 else
                 {
+                    // Normal drawing positions when not jumping
                     drawStart = -lineHeight / 2 + screenHeight / 2;
+                    if (drawStart < 0) drawStart = 0; // Ensure the draw start is not above the screen
+                    drawEnd = lineHeight / 2 + screenHeight / 2;
+                    if (drawEnd >= screenHeight) drawEnd = screenHeight - 1; // Ensure the draw end is not below the screen
                 }
 
+                // Choose the wall texture based on the map value at the current position
+                int texNum = map[mapX, mapY];
+                Bitmap texture = wallTextures[texNum];
 
-                // Choose wall color or texture
-                Bitmap texture;
-                switch (map[mapX, mapY])
+                int texWidth = texture.Width;
+                int texHeight = texture.Height;
+
+                // Calculate the exact position on the wall (x-coordinate) where the ray hits
+                float wallX = (side == 0) ? player.Y + perpWallDist * rayDirY : player.X + perpWallDist * rayDirX;
+                wallX -= (float)Math.Floor(wallX);
+
+                // Calculate the x-coordinate on the texture corresponding to the wall hit position
+                int texX = (int)(wallX * (float)texWidth);
+                if (side == 0 && rayDirX > 0) texX = texWidth - texX - 1;
+                if (side == 1 && rayDirY < 0) texX = texWidth - texX - 1;
+
+                // Loop through each pixel from drawStart to drawEnd on the current vertical stripe
+                for (int y = drawStart; y < drawEnd; y++)
                 {
-                    case 1:
-                        texture = wallTextures[1]; // Use the brick texture for this wall type
-                        break;
-                    case 2:
-                        texture = wallTextures[2]; // Use the mossy texture for this wall type
-                        break;
-                    case 3:
-                        texture = wallTextures[3]; // Use the wood texture for this wall type
-                        break;
-                    case 4:
-                        texture = wallTextures[4];
-                        break;
-                    case 5:
-                        texture = wallTextures[5];
-                        break;
-                    case 6:
-                        texture = wallTextures[6];
-                        break;
-                    default:
-                        texture = null; // No texture for this wall type
-                        break;
+                    // Calculate the corresponding y-coordinate on the texture
+                    int d = y * 256 - screenHeight * 128 + lineHeight * 128;
+                    int texY = ((d * texHeight) / lineHeight) / 256;
+
+                    // Get the color from the texture at the calculated (texX, texY) position
+                    Color color = texture.GetPixel(texX, texY);
+
+                    // Darken the color for sides perpendicular to the ray direction to create a shading effect
+                    if (side == 1)
+                    {
+                        color = Color.FromArgb(color.R / 2, color.G / 2, color.B / 2);
+                    }
+
+                    // Set the pixel color on the bitmap at the current stripe (i) and y-coordinate
+                    _bitmap.SetPixel(i, y, color);
                 }
 
-                if (texture != null)
-                {
-                    // Calculate texture coordinates based on wall hit
-                    double wallHitX;
-                    if (side == 0) // Ray hits a vertical wall
-                    {
-                        wallHitX = player.Y + perpWallDist * rayDirY;
-                    }
-                    else // Ray hits a horizontal wall
-                    {
-                        wallHitX = player.X + perpWallDist * rayDirX;
-                    }
-                    wallHitX -= Math.Floor(wallHitX); // Normalize wallHitX to a fraction between 0 and 1
-
-                    // Calculate texture coordinates based on wall hit
-                    int texX = (int)(texture.Width * wallHitX);
-
-                    // Define source and destination rectangles for drawing the textured wall
-                    Rectangle srcRect = new Rectangle(texX, 0, 1, texture.Height); // Source rectangle from texture
-                    Rectangle destRect = new Rectangle(i, drawStart, 1, lineHeight); // Destination rectangle on screen
-
-                    // Draw the textured vertical line
-                    _graphics.DrawImage(texture, destRect, srcRect, GraphicsUnit.Pixel);
-                }
             }
         }
         private void RenderSprites(int screenWidth, int screenHeight)
