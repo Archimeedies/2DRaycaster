@@ -13,7 +13,7 @@ namespace _2d_raycaster_project
         private const int HEIGHT = 480;
         //private const int WIDTH = 960;
         //private const int HEIGHT = 540;
-        private int upscaleFactor = 2;
+        private int upscaleFactor = 3;
         
 
         // graphics
@@ -29,7 +29,7 @@ namespace _2d_raycaster_project
         private bool isMouseCaptured = false;
 
         // player settings
-        private const float MOVE_SPEED = 0.1f; // adjust for player move seed
+        private const float MOVE_SPEED = 0.2f; // adjust for player move seed
         private const float MOUSE_SENSITIVITY = 0.002f; // adjust for player mouse speed
         private const float FOV = (float)Math.PI / 3; // still have to find a way to initalize this
         private const float JUMP_STRENGTH = 0; // still have to find a way to implement this

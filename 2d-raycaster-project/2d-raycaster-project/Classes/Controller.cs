@@ -10,6 +10,8 @@ namespace _2d_raycaster_project
 
         public Controller(Bitmap bitmap, Graphics graphics, Size clientSize)
         {
+            clientSize.Width = bitmap.Width;
+            clientSize.Height = bitmap.Height;
             raycaster = new Raycaster(bitmap, graphics, clientSize);
         }
 
