@@ -8,6 +8,14 @@ namespace _2d_raycaster_project
 {
     public partial class RaycasterEngine : Form
     {
+        // clientSize
+        //const int WIDTH = 640;
+        //const int HEIGHT = 480;
+        private const int WIDTH = 960;
+        private const int HEIGHT = 540;
+        private int upscaleFactor = 3;
+        
+
         // graphics
         private Bitmap offScreenBitmap;
         private Graphics offScreenGraphics;
@@ -21,20 +29,21 @@ namespace _2d_raycaster_project
         private bool isMouseCaptured = false;
 
         // player settings
-        const float MOVE_SPEED = 0.1f; // adjust for player move seed
-        const float MOUSE_SENSITIVITY = 0.002f; // adjust for player mouse speed
-        const float FOV = (float)Math.PI / 3; // still have to find a way to initalize this
-        const float JUMP_STRENGTH = 0; // still have to find a way to implement this
+        private const float MOVE_SPEED = 0.1f; // adjust for player move seed
+        private const float MOUSE_SENSITIVITY = 0.002f; // adjust for player mouse speed
+        private const float FOV = (float)Math.PI / 3; // still have to find a way to initalize this
+        private const float JUMP_STRENGTH = 0; // still have to find a way to implement this
 
         public RaycasterEngine()
         {
             InitializeComponent();
+            this.Width = WIDTH;
+            this.Height = HEIGHT;
 
             // initializing graphics
-            offScreenBitmap = new Bitmap(this.Width, this.Height);
+            offScreenBitmap = new Bitmap(WIDTH / upscaleFactor, HEIGHT / upscaleFactor);
             offScreenGraphics = Graphics.FromImage(offScreenBitmap);
             graphics = this.CreateGraphics();
-            this.DoubleBuffered = true;
 
             // initializing classes
             controller = new Controller(offScreenBitmap, offScreenGraphics, ClientSize);
@@ -50,8 +59,20 @@ namespace _2d_raycaster_project
         private void timer1_Tick(object sender, EventArgs e)
         {
             controller.Run();
-            graphics.DrawImage(offScreenBitmap, 0, 0); // Draw the offscreen bitmap to the form
+
+            // Calculate scaling factors
+            float scaleX = (float)this.ClientSize.Width / offScreenBitmap.Width;
+            float scaleY = (float)this.ClientSize.Height / offScreenBitmap.Height;
+            float scale = Math.Min(scaleX, scaleY);
+
+            // Calculate scaled width and height
+            int scaledWidth = (int)(offScreenBitmap.Width * scale);
+            int scaledHeight = (int)(offScreenBitmap.Height * scale);
+
+            // Draw the scaled bitmap to the form
+            graphics.DrawImage(offScreenBitmap, 0, 0, scaledWidth, scaledHeight);
         }
+
 
         private void Form1_KeyDown_1(object sender, KeyEventArgs e)
         {

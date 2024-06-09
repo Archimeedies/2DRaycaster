@@ -77,6 +77,59 @@ namespace _2d_raycaster_project
             Bitmap barrelTexture = Properties.Resources.newbarrel; // Example texture
             sprites.Add(new Sprite(2.5f, 2.5f, barrelTexture)); // Add more sprites as needed, first to floats are where the sprite spawns in the map
         }
+        private void DrawFloor(int screenHeight, int screenWidth)
+        {
+            for (int y = screenHeight / 2; y < screenHeight; y++)
+            {
+                // rayDir for leftmost ray (x = 0) and rightmost ray (x = screenWidth)
+                float rayDirX0 = player.DirectionX - player.PlaneX;
+                float rayDirY0 = player.DirectionY - player.PlaneY;
+                float rayDirX1 = player.DirectionX + player.PlaneX;
+                float rayDirY1 = player.DirectionY + player.PlaneY;
+
+                // Current y position compared to the center of the screen (the horizon)
+                int p = y - screenHeight / 2;
+
+                // Vertical position of the camera.
+                float posZ = (float)0.5 * screenHeight;
+
+                // Horizontal distance from the camera to the floor for the current row.
+                // 0.5 is the z position exactly in the middle between floor and ceiling.
+                float rowDistance = posZ / p;
+
+                // calculate the real world step vector we have to add for each x (parallel to camera plane)
+                // adding step by step avoids multiplications with a weight in the inner loop
+                float floorStepX = rowDistance * (rayDirX1 - rayDirX0) / screenWidth;
+                float floorStepY = rowDistance * (rayDirY1 - rayDirY0) / screenWidth;
+
+                // real world coordinates of the leftmost column. This will be updated as we step to the right.
+                float floorX = player.X + rowDistance * rayDirX0;
+                float floorY = player.Y + rowDistance * rayDirY0;
+
+                for (int x = 0; x < screenWidth; x++)
+                {
+                    // the cell coord is simply got from the integer parts of floorX and floorY
+                    int cellX = (int)floorX;
+                    int cellY = (int)floorY;
+
+                    // Choose a floor texture. For now, we use the same as wall texture 4
+                    Bitmap floorTexture = wallTextures[4];
+
+                    // get the texture coordinate from the fractional part
+                    int tx = (int)(floorTexture.Width * (floorX - cellX)) & (floorTexture.Width - 1);
+                    int ty = (int)(floorTexture.Height * (floorY - cellY)) & (floorTexture.Height - 1);
+
+                    floorX += floorStepX;
+                    floorY += floorStepY;
+
+                    // Get the color from the texture
+                    Color color = floorTexture.GetPixel(tx, ty);
+
+                    // Draw the pixel on the bitmap
+                    _bitmap.SetPixel(x, y, color);
+                }
+            }
+        }
         public void Update()
         {
             // clear the screen
@@ -85,13 +138,7 @@ namespace _2d_raycaster_project
             int screenWidth = _clientSize.Width;
             int screenHeight = _clientSize.Height;
 
-            // Initialize floor and ceiling drawing if not done already
-            if (!isFloorCeilingInitialized)
-            {
-                InitializeFloorCeiling(screenWidth, screenHeight);
-            }
-            // Draw the pre-rendered floor and ceiling
-            _graphics.DrawImage(floorCeilingBitmap, 0, 0);
+            DrawFloor(screenHeight, screenWidth);
 
             // rendering walls
             RenderWalls(screenWidth, screenHeight);
@@ -326,7 +373,7 @@ namespace _2d_raycaster_project
             }
             //draw FPS
             string fpsText = $"FPS: {fps:F0}";
-            _graphics.DrawString(fpsText, new Font("Arial", 12), Brushes.White, new PointF(10, 10));
+            _graphics.DrawString(fpsText, new Font("Arial", 12 / 2), Brushes.White, new PointF(5, 5));
         }
 
         // player movement
