@@ -71,7 +71,11 @@ namespace _2d_raycaster_project
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            controller.PlayerKeyMovement(e, MOVE_SPEED);
+            controller.PlayerKeyDownMovement(e, MOVE_SPEED);
+        }
+        private void RaycasterEngine_KeyUp(object sender, KeyEventArgs e)
+        {
+            controller.PlayerKeyUpMovement(e);
         }
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {

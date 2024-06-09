@@ -18,8 +18,18 @@ namespace _2d_raycaster_project
 
         // Player instance
         private Player player;
-        private bool isJumping = false;
-        private int jumpTime = 0;
+        private float moveSpeed; // Adjust speed as needed
+        private Dictionary<Keys, bool> keyStates = new Dictionary<Keys, bool>
+        {
+            { Keys.W, false },
+            { Keys.S, false },
+            { Keys.A, false },
+            { Keys.D, false },
+            { Keys.Up, false },
+            { Keys.Down, false },
+            { Keys.Left, false },
+            { Keys.Right, false },
+        };
 
         // sprites
         private List<Sprite> sprites = new List<Sprite>();
@@ -101,6 +111,8 @@ namespace _2d_raycaster_project
 
             // rendering walls
             RenderWalls(screenWidth, screenHeight);
+
+            UpdatePlayerMovement();
 
             //// UNCOMMENT TO Render sprites
             //RenderSprites(screenWidth, screenHeight);
@@ -259,28 +271,13 @@ namespace _2d_raycaster_project
                 int lineHeight = (int)(screenHeight / perpWallDist);
                 // Calculate the drawing start and end positions for the wall, considering whether the player is jumping or not
                 int drawStart;
-                int drawEnd = 0;
+                int drawEnd;
 
-                if (isJumping)
-                {
-                    // If the player is jumping, adjust the draw start position to create a jumping effect
-                    jumpTime++;
-                    drawStart = screenHeight / 2 + lineHeight / -5; // Push the wall rendering down to appear as if jumping
-                    if (jumpTime == 9500)
-                    {
-                        // End the jump after a certain period
-                        isJumping = false;
-                        jumpTime = 0;
-                    }
-                }
-                else
-                {
-                    // Normal drawing positions when not jumping
-                    drawStart = -lineHeight / 2 + screenHeight / 2;
-                    if (drawStart < 0) drawStart = 0; // Ensure the draw start is not above the screen
-                    drawEnd = lineHeight / 2 + screenHeight / 2;
-                    if (drawEnd >= screenHeight) drawEnd = screenHeight - 1; // Ensure the draw end is not below the screen
-                }
+                // Normal drawing positions when not jumping
+                drawStart = -lineHeight / 2 + screenHeight / 2;
+                if (drawStart < 0) drawStart = 0; // Ensure the draw start is not above the screen
+                drawEnd = lineHeight / 2 + screenHeight / 2;
+                if (drawEnd >= screenHeight) drawEnd = screenHeight - 1; // Ensure the draw end is not below the screen
 
                 // Choose the wall texture based on the map value at the current position
                 int texNum = map[mapX, mapY];
@@ -427,6 +424,40 @@ namespace _2d_raycaster_project
                 // Both x and y collisions, stop movement
             }
         }
+        public void StartMove(KeyEventArgs e, float moveSpeed)
+        {
+            this.moveSpeed = moveSpeed;
+            if (keyStates.ContainsKey(e.KeyCode))
+            {
+                keyStates[e.KeyCode] = true;
+            }
+        }
+        public void StopMove(KeyEventArgs e)
+        {
+            if (keyStates.ContainsKey(e.KeyCode))
+            {
+                keyStates[e.KeyCode] = false;
+            }
+        }
+        private void UpdatePlayerMovement()
+        {
+            if (keyStates[Keys.W])
+            {
+                MoveForward(moveSpeed);
+            }
+            if (keyStates[Keys.S])
+            {
+                MoveBackward(moveSpeed);
+            }
+            if (keyStates[Keys.A])
+            {
+                MoveLeft(moveSpeed);
+            }
+            if (keyStates[Keys.D])
+            {
+                MoveRight(moveSpeed);
+            }
+        }
         public void MoveForward(float distance)
         {
             float newX = player.X + (float)Math.Cos(player.Direction) * distance;
@@ -487,10 +518,6 @@ namespace _2d_raycaster_project
             {
                 PlayerSlide(newX, newY);
             }
-        }
-        public void MoveJump()
-        {
-            isJumping = true;
         }
         public void MouseMove(Form form, ref Point lastMousePosition, float sensitivity)
         {

@@ -20,27 +20,42 @@ namespace _2d_raycaster_project
             raycaster.Update();
         }
 
-        public void PlayerKeyMovement(KeyEventArgs e, float moveSpeed)
+        public void PlayerKeyDownMovement(KeyEventArgs e, float moveSpeed)
         {
             switch (e.KeyCode)
             {
                 case Keys.W:
-                    raycaster.MoveForward(moveSpeed);
+                    raycaster.StartMove(e, moveSpeed);
                     break;
                 case Keys.S:
-                    raycaster.MoveBackward(moveSpeed);
+                    raycaster.StartMove(e, moveSpeed);
                     break;
                 case Keys.A:
-                    raycaster.MoveLeft(moveSpeed);
+                    raycaster.StartMove(e, moveSpeed);
                     break;
                 case Keys.D:
-                    raycaster.MoveRight(moveSpeed);
-                    break;
-                case Keys.Space:
-                    raycaster.MoveJump();
+                    raycaster.StartMove(e, moveSpeed);
                     break;
                 case Keys.Escape:
                     Application.Exit();
+                    break;
+            }
+        }
+        public void PlayerKeyUpMovement(KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.W:
+                    raycaster.StopMove(e);
+                    break;
+                case Keys.S:
+                    raycaster.StopMove(e);
+                    break;
+                case Keys.A:
+                    raycaster.StopMove(e);
+                    break;
+                case Keys.D:
+                    raycaster.StopMove(e);
                     break;
             }
         }
