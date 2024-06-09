@@ -24,9 +24,9 @@ namespace _2d_raycaster_project
         // sprites
         private List<Sprite> sprites = new List<Sprite>();
 
-        // floor and ceiling variables
-        private bool isFloorCeilingInitialized = false;
-        private Bitmap floorCeilingBitmap;
+        // ceiling variables
+        private bool isCeilingInitialized = false;
+        private Bitmap ceilingBitmap;
 
         // fps tracker
         private Stopwatch stopwatch = new Stopwatch();
@@ -77,7 +77,56 @@ namespace _2d_raycaster_project
             Bitmap barrelTexture = Properties.Resources.newbarrel; // Example texture
             sprites.Add(new Sprite(2.5f, 2.5f, barrelTexture)); // Add more sprites as needed, first to floats are where the sprite spawns in the map
         }
-        private void DrawFloor(int screenHeight, int screenWidth)
+        public void Update()
+        {
+            // clear the screen
+            _graphics.FillRectangle(Brushes.Black, 0, 0, _clientSize.Width, _clientSize.Height);
+
+            int screenWidth = _clientSize.Width;
+            int screenHeight = _clientSize.Height;
+
+
+            // Initialize ceiling drawing if not done already
+            if (!isCeilingInitialized)
+            {
+                // rendering ceiling
+                RenderCeiling(screenWidth, screenHeight);
+            }
+            // Draw the pre-rendered floor and ceiling
+            _graphics.DrawImage(ceilingBitmap, 0, 0);
+
+            // rendering floors
+            RenderFloor(screenWidth, screenHeight);
+
+            // rendering walls
+            RenderWalls(screenWidth, screenHeight);
+
+            //// UNCOMMENT TO Render sprites
+            //RenderSprites(screenWidth, screenHeight);
+
+            // update FPS
+            CalculateFPS();
+
+            _graphics.DrawImage(_bitmap, 0, 0);
+        }
+        private void RenderCeiling(int screenWidth, int screenHeight)
+        {
+            ceilingBitmap = new Bitmap(screenWidth, screenHeight);
+            using (Graphics g = Graphics.FromImage(ceilingBitmap))
+            {
+                // Draw ceiling with gradient
+                for (int i = screenHeight / 2; i < screenHeight; i++)
+                {
+                    // Ceiling color gradient
+                    int gradientFactor = (int)(255 * (i - screenHeight / 2) / (screenHeight / 2));
+                    gradientFactor = 255 - gradientFactor;
+                    Color ceilingColor = Color.FromArgb(gradientFactor, gradientFactor, 255);
+                    g.DrawLine(new Pen(ceilingColor), 0, screenHeight - i, screenWidth, screenHeight - i);
+                }
+            }
+            isCeilingInitialized = true;
+        }
+        private void RenderFloor(int screenWidth, int screenHeight)
         {
             for (int y = screenHeight / 2; y < screenHeight; y++)
             {
@@ -129,48 +178,6 @@ namespace _2d_raycaster_project
                     _bitmap.SetPixel(x, y, color);
                 }
             }
-        }
-        public void Update()
-        {
-            // clear the screen
-            _graphics.FillRectangle(Brushes.Black, 0, 0, _clientSize.Width, _clientSize.Height);
-
-            int screenWidth = _clientSize.Width;
-            int screenHeight = _clientSize.Height;
-
-            DrawFloor(screenHeight, screenWidth);
-
-            // rendering walls
-            RenderWalls(screenWidth, screenHeight);
-
-            //// UNCOMMENT TO Render sprites
-            //RenderSprites(screenWidth, screenHeight);
-
-            // update FPS
-            CalculateFPS();
-
-            _graphics.DrawImage(_bitmap, 0, 0);
-        }
-        private void InitializeFloorCeiling(int screenWidth, int screenHeight)
-        {
-            floorCeilingBitmap = new Bitmap(screenWidth, screenHeight);
-            using (Graphics g = Graphics.FromImage(floorCeilingBitmap))
-            {
-                // Draw floor and ceiling with gradient
-                for (int i = screenHeight / 2; i < screenHeight; i++)
-                {
-                    // Floor color gradient
-                    int gradientFactor = (int)(255 * (i - screenHeight / 2) / (screenHeight / 2));
-                    Color floorColor = Color.FromArgb(gradientFactor, gradientFactor, gradientFactor);
-                    g.DrawLine(new Pen(floorColor), 0, i, screenWidth, i);
-
-                    // Ceiling color gradient
-                    gradientFactor = 255 - gradientFactor;
-                    Color ceilingColor = Color.FromArgb(gradientFactor, gradientFactor, 255);
-                    g.DrawLine(new Pen(ceilingColor), 0, screenHeight - i, screenWidth, screenHeight - i);
-                }
-            }
-            isFloorCeilingInitialized = true;
         }
         private void RenderWalls(int screenWidth, int screenHeight)
         {
