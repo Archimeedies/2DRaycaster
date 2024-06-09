@@ -70,6 +70,7 @@ namespace _2d_raycaster_project
             wallTextures.Add(4, Properties.Resources.eagle);
             wallTextures.Add(5, Properties.Resources.bluestone);
             wallTextures.Add(6, Properties.Resources.greystone);
+            wallTextures.Add(7, Properties.Resources.colorstone);
             // Add more textures as needed
         }
         private void LoadSprites()
@@ -162,7 +163,7 @@ namespace _2d_raycaster_project
                     int cellY = (int)floorY;
 
                     // Choose a floor texture. For now, we use the same as wall texture 4
-                    Bitmap floorTexture = wallTextures[4];
+                    Bitmap floorTexture = wallTextures[7];
 
                     // get the texture coordinate from the fractional part
                     int tx = (int)(floorTexture.Width * (floorX - cellX)) & (floorTexture.Width - 1);

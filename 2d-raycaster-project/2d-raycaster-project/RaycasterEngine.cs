@@ -8,12 +8,12 @@ namespace _2d_raycaster_project
 {
     public partial class RaycasterEngine : Form
     {
-        // clientSize
+        // client Size
         private const int WIDTH = 640;
         private const int HEIGHT = 480;
         //private const int WIDTH = 960;
         //private const int HEIGHT = 540;
-        private int upscaleFactor = 4;
+        private int upscaleFactor = 3;
         
 
         // graphics
@@ -60,14 +60,9 @@ namespace _2d_raycaster_project
         {
             controller.Run();
 
-            // Calculate scaling factors
-            float scaleX = (float)this.ClientSize.Width / offScreenBitmap.Width;
-            float scaleY = (float)this.ClientSize.Height / offScreenBitmap.Height;
-            float scale = Math.Min(scaleX, scaleY);
-
             // Calculate scaled width and height
-            int scaledWidth = (int)(offScreenBitmap.Width * scale);
-            int scaledHeight = (int)(offScreenBitmap.Height * scale);
+            int scaledWidth = (int)(offScreenBitmap.Width * upscaleFactor);
+            int scaledHeight = (int)(offScreenBitmap.Height * upscaleFactor);
 
             // Draw the scaled bitmap to the form
             graphics.DrawImage(offScreenBitmap, 0, 0, scaledWidth, scaledHeight);
