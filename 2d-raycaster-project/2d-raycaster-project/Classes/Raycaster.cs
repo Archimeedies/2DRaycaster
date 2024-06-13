@@ -1,4 +1,4 @@
-﻿using _2d_raycaster_project.Classes;
+﻿using _2d_raycaster_project;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -335,6 +335,9 @@ namespace _2d_raycaster_project
                 float transformX = invDet * (player.DirectionY * spriteX - player.DirectionX * spriteY);
                 float transformY = invDet * (-player.PlaneY * spriteX + player.PlaneX * spriteY);
 
+                // Only render sprites in front of the player
+                if (transformY <= 0) continue;
+
                 int spriteScreenX = (int)((screenWidth / 2) * (1 + transformX / transformY));
 
                 // Calculate height and width of the sprite on screen
@@ -442,27 +445,18 @@ namespace _2d_raycaster_project
             }
             return false;
         }
-
-        private void PlayerSlide(float x, float y)
+        private bool IsSpriteCollision(float x, float y)
         {
-            // Determine the nearest wall direction to slide along
-            bool xCollision = IsWallCollision(x, player.Y);
-            bool yCollision = IsWallCollision(player.X, y);
-
-            if (xCollision && !yCollision)
+            RectangleF playerBox = new RectangleF(x - 0.1f, y - 0.1f, 0.2f, 0.2f); // Adjust player's collision box size
+            foreach (var sprite in sprites)
             {
-                // Slide along the Y axis (vertical wall)
-                player.Y = y;
+                RectangleF spriteBox = sprite.GetBoundingBox();
+                if (playerBox.IntersectsWith(spriteBox))
+                {
+                    return true;
+                }
             }
-            else if (yCollision && !xCollision)
-            {
-                // Slide along the X axis (horizontal wall)
-                player.X = x;
-            }
-            else if (xCollision && yCollision)
-            {
-                // Both x and y collisions, stop movement
-            }
+            return false;
         }
         public void StartMove(KeyEventArgs e, float moveSpeed)
         {
@@ -479,38 +473,50 @@ namespace _2d_raycaster_project
                 keyStates[e.KeyCode] = false;
             }
         }
-
         private void UpdatePlayerMovement()
         {
             if (keyStates[Keys.W])
             {
-                if (!IsWallCollision(player.X + player.DirectionX * moveSpeed, player.Y))
+                if (!IsWallCollision(player.X + player.DirectionX * moveSpeed, player.Y) &&
+                    !IsSpriteCollision(player.X + player.DirectionX * moveSpeed, player.Y))
                     player.X += player.DirectionX * moveSpeed;
-                if (!IsWallCollision(player.X, player.Y + player.DirectionY * moveSpeed))
+
+                if (!IsWallCollision(player.X, player.Y + player.DirectionY * moveSpeed) &&
+                    !IsSpriteCollision(player.X, player.Y + player.DirectionY * moveSpeed))
                     player.Y += player.DirectionY * moveSpeed;
             }
             if (keyStates[Keys.S])
             {
-                if (!IsWallCollision(player.X - player.DirectionX * moveSpeed, player.Y))
+                if (!IsWallCollision(player.X - player.DirectionX * moveSpeed, player.Y) &&
+                    !IsSpriteCollision(player.X - player.DirectionX * moveSpeed, player.Y))
                     player.X -= player.DirectionX * moveSpeed;
-                if (!IsWallCollision(player.X, player.Y - player.DirectionY * moveSpeed))
+
+                if (!IsWallCollision(player.X, player.Y - player.DirectionY * moveSpeed) &&
+                    !IsSpriteCollision(player.X, player.Y - player.DirectionY * moveSpeed))
                     player.Y -= player.DirectionY * moveSpeed;
             }
             if (keyStates[Keys.A])
             {
-                if (!IsWallCollision(player.X - player.PlaneX * moveSpeed, player.Y))
+                if (!IsWallCollision(player.X - player.PlaneX * moveSpeed, player.Y) &&
+                    !IsSpriteCollision(player.X - player.PlaneX * moveSpeed, player.Y))
                     player.X -= player.PlaneX * moveSpeed;
-                if (!IsWallCollision(player.X, player.Y - player.PlaneY * moveSpeed))
+
+                if (!IsWallCollision(player.X, player.Y - player.PlaneY * moveSpeed) &&
+                    !IsSpriteCollision(player.X, player.Y - player.PlaneY * moveSpeed))
                     player.Y -= player.PlaneY * moveSpeed;
             }
             if (keyStates[Keys.D])
             {
-                if (!IsWallCollision(player.X + player.PlaneX * moveSpeed, player.Y))
+                if (!IsWallCollision(player.X + player.PlaneX * moveSpeed, player.Y) &&
+                    !IsSpriteCollision(player.X + player.PlaneX * moveSpeed, player.Y))
                     player.X += player.PlaneX * moveSpeed;
-                if (!IsWallCollision(player.X, player.Y + player.PlaneY * moveSpeed))
+
+                if (!IsWallCollision(player.X, player.Y + player.PlaneY * moveSpeed) &&
+                    !IsSpriteCollision(player.X, player.Y + player.PlaneY * moveSpeed))
                     player.Y += player.PlaneY * moveSpeed;
             }
         }
+
 
         public void MouseMove(Form form, ref Point lastMousePosition, float sensitivity)
         {
