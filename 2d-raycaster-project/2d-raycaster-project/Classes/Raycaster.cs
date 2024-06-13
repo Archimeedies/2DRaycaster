@@ -25,10 +25,6 @@ namespace _2d_raycaster_project
             { Keys.S, false },
             { Keys.A, false },
             { Keys.D, false },
-            { Keys.Up, false },
-            { Keys.Down, false },
-            { Keys.Left, false },
-            { Keys.Right, false },
         };
 
         // sprites
@@ -488,71 +484,44 @@ namespace _2d_raycaster_project
         {
             if (keyStates[Keys.W])
             {
-                MoveForward(moveSpeed);
+                Move(moveSpeed, 1);
             }
             if (keyStates[Keys.S])
             {
-                MoveBackward(moveSpeed);
+                Move(moveSpeed, 2);
             }
             if (keyStates[Keys.A])
             {
-                MoveLeft(moveSpeed);
+                Move(moveSpeed, 3);
             }
             if (keyStates[Keys.D])
             {
-                MoveRight(moveSpeed);
+                Move(moveSpeed, 4);
             }
         }
-        public void MoveForward(float distance)
+        private void Move(float distance, int moveOption)
         {
-            float newX = player.X + (float)Math.Cos(player.Direction) * distance;
-            float newY = player.Y + (float)Math.Sin(player.Direction) * distance;
-
-            if (!IsWallCollision(newX, newY))
+            float newX = 0;
+            float newY = 0;
+            switch (moveOption)
             {
-                player.X = newX;
-                player.Y = newY;
+                case 1:
+                    newX = player.X + (float)Math.Cos(player.Direction) * distance;
+                    newY = player.Y + (float)Math.Sin(player.Direction) * distance;
+                    break;
+                case 2:
+                    newX = player.X - (float)Math.Cos(player.Direction) * distance;
+                    newY = player.Y - (float)Math.Sin(player.Direction) * distance;
+                    break;
+                case 3:
+                    newX = player.X + (float)Math.Sin(player.Direction) * distance;
+                    newY = player.Y - (float)Math.Cos(player.Direction) * distance;
+                    break;
+                case 4:
+                    newX = player.X - (float)Math.Sin(player.Direction) * distance;
+                    newY = player.Y + (float)Math.Cos(player.Direction) * distance;
+                    break;
             }
-            else
-            {
-                PlayerSlide(newX, newY);
-            }
-        }
-        public void MoveBackward(float distance)
-        {
-            float newX = player.X - (float)Math.Cos(player.Direction) * distance;
-            float newY = player.Y - (float)Math.Sin(player.Direction) * distance;
-
-            if (!IsWallCollision(newX, newY))
-            {
-                player.X = newX;
-                player.Y = newY;
-            }
-            else
-            {
-                PlayerSlide(newX, newY);
-            }
-        }
-        public void MoveLeft(float distance)
-        {
-            float newX = player.X + (float)Math.Sin(player.Direction) * distance;
-            float newY = player.Y - (float)Math.Cos(player.Direction) * distance;
-
-            if (!IsWallCollision(newX, newY))
-            {
-                player.X = newX;
-                player.Y = newY;
-            }
-            else
-            {
-                PlayerSlide(newX, newY);
-            }
-        }
-
-        public void MoveRight(float distance)
-        {
-            float newX = player.X - (float)Math.Sin(player.Direction) * distance;
-            float newY = player.Y + (float)Math.Cos(player.Direction) * distance;
 
             if (!IsWallCollision(newX, newY))
             {
