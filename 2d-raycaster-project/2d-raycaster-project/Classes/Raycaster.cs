@@ -27,14 +27,14 @@ namespace _2d_raycaster_project
             { Keys.D, false },
         };
 
-        // sprites
+        // Sprites
         private List<Sprite> sprites = new List<Sprite>();
 
-        // ceiling variables
+        // Ceiling variables
         private bool isCeilingInitialized = false;
         private Bitmap ceilingBitmap;
 
-        // fps tracker
+        // FPS tracker
         private Stopwatch stopwatch = new Stopwatch();
         private int frameCount = 0;
         private double fps = 0.0;
@@ -46,18 +46,19 @@ namespace _2d_raycaster_project
         private const int MAP_HEIGHT = 11;
         private int[,] map = new int[MAP_WIDTH, MAP_HEIGHT]
         {
-                    {0,1,4,4,1,0,1,0,1,1,0},
-                    {2,0,0,0,0,3,0,3,0,0,5},
-                    {2,0,0,0,0,3,0,3,0,0,5},
-                    {2,0,0,0,0,3,0,3,0,0,5},
-                    {2,0,0,0,0,0,0,0,0,0,5},
-                    {2,0,0,0,0,0,0,0,0,0,5},
-                    {2,0,0,0,0,0,0,0,0,0,5},
-                    {2,0,0,0,0,0,0,0,0,0,5},
-                    {2,0,0,0,0,0,0,0,0,0,5},
-                    {0,6,6,6,6,6,6,6,6,6,0}
+            {0,1,4,4,1,0,1,0,1,1,0},
+            {2,0,0,0,0,3,0,3,0,0,5},
+            {2,0,0,0,0,3,0,3,0,0,5},
+            {2,0,0,0,0,3,0,3,0,0,5},
+            {2,0,0,0,0,0,0,0,0,0,5},
+            {2,0,0,0,0,0,0,0,0,0,5},
+            {2,0,0,0,0,0,0,0,0,0,5},
+            {2,0,0,0,0,0,0,0,0,0,5},
+            {2,0,0,0,0,0,0,0,0,0,5},
+            {0,6,6,6,6,6,6,6,6,6,0}
         };
-        private Dictionary<int, Bitmap> wallTextures = new Dictionary<int, Bitmap>(); // Map wall types to texture images
+        private Bitmap[] wallTextures = new Bitmap[8]; // Array for textures to reduce dictionary lookup time
+
         public Raycaster(Bitmap bitmap, Graphics graphics, Size clientSize)
         {
             this._graphics = graphics;
@@ -68,54 +69,54 @@ namespace _2d_raycaster_project
             LoadTextures();
             LoadSprites();
         }
+
         private void LoadTextures()
         {
-            wallTextures.Add(1, Properties.Resources.redbrick); // Example: Brick texture
-            wallTextures.Add(2, Properties.Resources.mossy); // Example: Mossy texture
-            wallTextures.Add(3, Properties.Resources.wood);
-            wallTextures.Add(4, Properties.Resources.eagle);
-            wallTextures.Add(5, Properties.Resources.bluestone);
-            wallTextures.Add(6, Properties.Resources.greystone);
-            wallTextures.Add(7, Properties.Resources.colorstone);
+            wallTextures[1] = Properties.Resources.redbrick; // Example: Brick texture
+            wallTextures[2] = Properties.Resources.mossy; // Example: Mossy texture
+            wallTextures[3] = Properties.Resources.wood;
+            wallTextures[4] = Properties.Resources.eagle;
+            wallTextures[5] = Properties.Resources.bluestone;
+            wallTextures[6] = Properties.Resources.greystone;
+            wallTextures[7] = Properties.Resources.colorstone;
             // Add more textures as needed
         }
         private void LoadSprites()
         {
             Bitmap barrelTexture = Properties.Resources.newbarrel; // Example texture
-            sprites.Add(new Sprite(1.5f, 6.5f, barrelTexture)); // Add more sprites as needed, first to floats are where the sprite spawns in the map
+            sprites.Add(new Sprite(1.5f, 6.5f, barrelTexture)); // Add more sprites as needed, first two floats are where the sprite spawns in the map
         }
         public void Update()
         {
-            // clear the screen
+            // Clear the screen
             _graphics.FillRectangle(Brushes.Black, 0, 0, _clientSize.Width, _clientSize.Height);
 
             int screenWidth = _clientSize.Width;
             int screenHeight = _clientSize.Height;
 
-
             // Initialize ceiling drawing if not done already
             if (!isCeilingInitialized)
             {
-                // rendering ceiling
+                // Rendering ceiling
                 RenderCeiling(screenWidth, screenHeight);
             }
+
             // Draw the pre-rendered floor and ceiling
             _graphics.DrawImage(ceilingBitmap, 0, 0);
 
-            // rendering floors
+            // Rendering floors
             RenderFloor(screenWidth, screenHeight);
 
-
-            // rendering walls
+            // Rendering walls
             RenderWalls(screenWidth, screenHeight);
 
-            // UNCOMMENT TO Render sprites
+            // Render sprites
             RenderSprites(screenWidth, screenHeight);
 
-            // update player movements
+            // Update player movements
             UpdatePlayerMovement();
 
-            // update FPS
+            // Update FPS
             CalculateFPS();
 
             _graphics.DrawImage(_bitmap, 0, 0);
@@ -141,82 +142,56 @@ namespace _2d_raycaster_project
         {
             for (int y = screenHeight / 2; y < screenHeight; y++)
             {
-                // rayDir for leftmost ray (x = 0) and rightmost ray (x = screenWidth)
                 float rayDirX0 = player.DirectionX - player.PlaneX;
                 float rayDirY0 = player.DirectionY - player.PlaneY;
                 float rayDirX1 = player.DirectionX + player.PlaneX;
                 float rayDirY1 = player.DirectionY + player.PlaneY;
 
-                // Current y position compared to the center of the screen (the horizon)
                 int p = y - screenHeight / 2;
-
-                // Vertical position of the camera.
-                float posZ = (float)0.5 * screenHeight;
-
-                // Horizontal distance from the camera to the floor for the current row.
-                // 0.5 is the z position exactly in the middle between floor and ceiling.
+                float posZ = 0.5f * screenHeight;
                 float rowDistance = posZ / p;
 
-                // calculate the real world step vector we have to add for each x (parallel to camera plane)
-                // adding step by step avoids multiplications with a weight in the inner loop
                 float floorStepX = rowDistance * (rayDirX1 - rayDirX0) / screenWidth;
                 float floorStepY = rowDistance * (rayDirY1 - rayDirY0) / screenWidth;
 
-                // real world coordinates of the leftmost column. This will be updated as we step to the right.
                 float floorX = player.X + rowDistance * rayDirX0;
                 float floorY = player.Y + rowDistance * rayDirY0;
 
                 for (int x = 0; x < screenWidth; x++)
                 {
-                    // the cell coord is simply got from the integer parts of floorX and floorY
                     int cellX = (int)floorX;
                     int cellY = (int)floorY;
 
-                    // Choose a floor texture. For now, we use the same as wall texture 4
                     Bitmap floorTexture = wallTextures[7];
 
-                    // get the texture coordinate from the fractional part
                     int tx = (int)(floorTexture.Width * (floorX - cellX)) & (floorTexture.Width - 1);
                     int ty = (int)(floorTexture.Height * (floorY - cellY)) & (floorTexture.Height - 1);
 
                     floorX += floorStepX;
                     floorY += floorStepY;
 
-                    // Get the color from the texture
                     Color color = floorTexture.GetPixel(tx, ty);
-
-                    // Draw the pixel on the bitmap
                     _bitmap.SetPixel(x, y, color);
                 }
             }
         }
         private void RenderWalls(int screenWidth, int screenHeight)
         {
-            // raycasting
             for (int i = 0; i < screenWidth; i++)
             {
-                // Calculate ray position and direction
-                float cameraX = 2 * i / (float)screenWidth - 1; // x-coordinate in camera space
+                float cameraX = 2 * i / (float)screenWidth - 1;
                 float rayDirX = player.DirectionX + player.PlaneX * cameraX;
                 float rayDirY = player.DirectionY + player.PlaneY * cameraX;
 
-                // Which box of the map we're in
                 int mapX = (int)player.X;
                 int mapY = (int)player.Y;
 
-                // Length of ray from one x or y-side to next x or y-side
                 float deltaDistX = Math.Abs(1 / rayDirX);
                 float deltaDistY = Math.Abs(1 / rayDirY);
 
                 float sideDistX, sideDistY;
-
-                // What direction to step in x or y-direction (either +1 or -1)
                 int stepX, stepY;
 
-                bool hit = false; // Was there a wall hit?
-                int side = 0; // Was a NS or a EW wall hit?
-
-                // Calculate step and initial sideDist
                 if (rayDirX < 0)
                 {
                     stepX = -1;
@@ -238,10 +213,11 @@ namespace _2d_raycaster_project
                     sideDistY = (mapY + 1.0f - player.Y) * deltaDistY;
                 }
 
-                // Perform DDA
-                while (!hit)
+                int hit = 0;
+                int side = 0;
+
+                while (hit == 0)
                 {
-                    // Jump to next map square, OR in x-direction, OR in y-direction
                     if (sideDistX < sideDistY)
                     {
                         sideDistX += deltaDistX;
@@ -254,65 +230,39 @@ namespace _2d_raycaster_project
                         mapY += stepY;
                         side = 1;
                     }
-                    // Check if ray has hit a wall
-                    if (map[mapX, mapY] > 0) hit = true;
+                    if (map[mapX, mapY] > 0) hit = 1;
                 }
 
-                // Calculate distance to the point of impact
                 float perpWallDist;
-                if (side == 0)
-                    perpWallDist = (mapX - player.X + (1 - stepX) / 2) / rayDirX;
-                else
-                    perpWallDist = (mapY - player.Y + (1 - stepY) / 2) / rayDirY;
+                if (side == 0) perpWallDist = (mapX - player.X + (1 - stepX) / 2) / rayDirX;
+                else perpWallDist = (mapY - player.Y + (1 - stepY) / 2) / rayDirY;
 
-                // Calculate height of line to draw on screen
                 int lineHeight = (int)(screenHeight / perpWallDist);
-                // Calculate the drawing start and end positions for the wall, considering whether the player is jumping or not
-                int drawStart;
-                int drawEnd;
 
-                // Normal drawing positions when not jumping
-                drawStart = -lineHeight / 2 + screenHeight / 2;
-                if (drawStart < 0) drawStart = 0; // Ensure the draw start is not above the screen
-                drawEnd = lineHeight / 2 + screenHeight / 2;
-                if (drawEnd >= screenHeight) drawEnd = screenHeight - 1; // Ensure the draw end is not below the screen
+                int drawStart = -lineHeight / 2 + screenHeight / 2;
+                if (drawStart < 0) drawStart = 0;
+                int drawEnd = lineHeight / 2 + screenHeight / 2;
+                if (drawEnd >= screenHeight) drawEnd = screenHeight - 1;
 
-                // Choose the wall texture based on the map value at the current position
-                int texNum = map[mapX, mapY];
-                Bitmap texture = wallTextures[texNum];
+                Bitmap texture = wallTextures[map[mapX, mapY]];
 
-                int texWidth = texture.Width;
-                int texHeight = texture.Height;
-
-                // Calculate the exact position on the wall (x-coordinate) where the ray hits
-                float wallX = (side == 0) ? player.Y + perpWallDist * rayDirY : player.X + perpWallDist * rayDirX;
+                float wallX;
+                if (side == 0) wallX = player.Y + perpWallDist * rayDirY;
+                else wallX = player.X + perpWallDist * rayDirX;
                 wallX -= (float)Math.Floor(wallX);
 
-                // Calculate the x-coordinate on the texture corresponding to the wall hit position
-                int texX = (int)(wallX * (float)texWidth);
-                if (side == 0 && rayDirX > 0) texX = texWidth - texX - 1;
-                if (side == 1 && rayDirY < 0) texX = texWidth - texX - 1;
+                int texX = (int)(wallX * texture.Width);
+                if (side == 0 && rayDirX > 0) texX = texture.Width - texX - 1;
+                if (side == 1 && rayDirY < 0) texX = texture.Width - texX - 1;
 
-                // Loop through each pixel from drawStart to drawEnd on the current vertical stripe
                 for (int y = drawStart; y < drawEnd; y++)
                 {
-                    // Calculate the corresponding y-coordinate on the texture
                     int d = y * 256 - screenHeight * 128 + lineHeight * 128;
-                    int texY = ((d * texHeight) / lineHeight) / 256;
-
-                    // Get the color from the texture at the calculated (texX, texY) position
+                    int texY = ((d * texture.Height) / lineHeight) / 256;
                     Color color = texture.GetPixel(texX, texY);
-
-                    // Darken the color for sides perpendicular to the ray direction to create a shading effect
-                    if (side == 1)
-                    {
-                        color = Color.FromArgb(color.R / 2, color.G / 2, color.B / 2);
-                    }
-
-                    // Set the pixel color on the bitmap at the current stripe (i) and y-coordinate
+                    if (side == 1) color = Color.FromArgb(color.R / 2, color.G / 2, color.B / 2);
                     _bitmap.SetPixel(i, y, color);
                 }
-
             }
         }
         private void RenderSprites(int screenWidth, int screenHeight)
@@ -395,21 +345,22 @@ namespace _2d_raycaster_project
 
             return true; // Sprite is visible and not obstructed
         }
-
         private void CalculateFPS()
         {
-            // calculate FPS
+            if (!stopwatch.IsRunning)
+            {
+                stopwatch.Start();
+            }
+
             frameCount++;
+
             if (frameCount >= fpsUpdateInterval)
             {
-                stopwatch.Stop();
-                fps = frameCount / (stopwatch.ElapsedMilliseconds / 1000.0);
+                fps = frameCount / stopwatch.Elapsed.TotalSeconds;
                 frameCount = 0;
                 stopwatch.Restart();
             }
-            //draw FPS
-            string fpsText = $"FPS: {fps:F0}";
-            _graphics.DrawString(fpsText, new Font("Arial", 12 / 2), Brushes.White, new PointF(5, 5));
+            _graphics.DrawString($"FPS: {fps:F0}", new Font("Arial", 7), Brushes.White, new PointF(2, 2));
         }
 
         // player movement
@@ -480,59 +431,39 @@ namespace _2d_raycaster_project
                 keyStates[e.KeyCode] = false;
             }
         }
+
         private void UpdatePlayerMovement()
         {
             if (keyStates[Keys.W])
             {
-                Move(moveSpeed, 1);
+                if (!IsWallCollision(player.X + player.DirectionX * moveSpeed, player.Y))
+                    player.X += player.DirectionX * moveSpeed;
+                if (!IsWallCollision(player.X, player.Y + player.DirectionY * moveSpeed))
+                    player.Y += player.DirectionY * moveSpeed;
             }
             if (keyStates[Keys.S])
             {
-                Move(moveSpeed, 2);
+                if (!IsWallCollision(player.X - player.DirectionX * moveSpeed, player.Y))
+                    player.X -= player.DirectionX * moveSpeed;
+                if (!IsWallCollision(player.X, player.Y - player.DirectionY * moveSpeed))
+                    player.Y -= player.DirectionY * moveSpeed;
             }
             if (keyStates[Keys.A])
             {
-                Move(moveSpeed, 3);
+                if (!IsWallCollision(player.X - player.PlaneX * moveSpeed, player.Y))
+                    player.X -= player.PlaneX * moveSpeed;
+                if (!IsWallCollision(player.X, player.Y - player.PlaneY * moveSpeed))
+                    player.Y -= player.PlaneY * moveSpeed;
             }
             if (keyStates[Keys.D])
             {
-                Move(moveSpeed, 4);
+                if (!IsWallCollision(player.X + player.PlaneX * moveSpeed, player.Y))
+                    player.X += player.PlaneX * moveSpeed;
+                if (!IsWallCollision(player.X, player.Y + player.PlaneY * moveSpeed))
+                    player.Y += player.PlaneY * moveSpeed;
             }
         }
-        private void Move(float distance, int moveOption)
-        {
-            float newX = 0;
-            float newY = 0;
-            switch (moveOption)
-            {
-                case 1:
-                    newX = player.X + (float)Math.Cos(player.Direction) * distance;
-                    newY = player.Y + (float)Math.Sin(player.Direction) * distance;
-                    break;
-                case 2:
-                    newX = player.X - (float)Math.Cos(player.Direction) * distance;
-                    newY = player.Y - (float)Math.Sin(player.Direction) * distance;
-                    break;
-                case 3:
-                    newX = player.X + (float)Math.Sin(player.Direction) * distance;
-                    newY = player.Y - (float)Math.Cos(player.Direction) * distance;
-                    break;
-                case 4:
-                    newX = player.X - (float)Math.Sin(player.Direction) * distance;
-                    newY = player.Y + (float)Math.Cos(player.Direction) * distance;
-                    break;
-            }
 
-            if (!IsWallCollision(newX, newY))
-            {
-                player.X = newX;
-                player.Y = newY;
-            }
-            else
-            {
-                PlayerSlide(newX, newY);
-            }
-        }
         public void MouseMove(Form form, ref Point lastMousePosition, float sensitivity)
         {
             Point currentMousePosition = form.PointToClient(Cursor.Position);
