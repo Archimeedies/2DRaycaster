@@ -9,11 +9,11 @@ namespace _2d_raycaster_project
     public partial class RaycasterEngine : Form
     {
         // client Size
-        private const int WIDTH = 640;
-        private const int HEIGHT = 480;
-        //private const int WIDTH = 960;
-        //private const int HEIGHT = 540;
-        private int upscaleFactor = 4;
+        //private const int WIDTH = 640;
+        //private const int HEIGHT = 480;
+        private const int WIDTH = 700;
+        private const int HEIGHT = 540;
+        private int upscaleFactor = 1;
         
 
         // graphics
@@ -49,7 +49,7 @@ namespace _2d_raycaster_project
             controller = new Controller(offScreenBitmap, offScreenGraphics, ClientSize);
 
             // timer settings
-            timer1.Interval = 16; // 16 should be approximately 60 FPS, set to 1 for more updates per second
+            timer1.Interval = 1; // 16 should be approximately 60 FPS, set to 1 for more updates per second
             timer1.Start();
 
             // Capture the mouse
